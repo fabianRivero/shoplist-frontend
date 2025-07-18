@@ -45,7 +45,7 @@ export const RegisterForm = () => {
                 <FormInput label="Password" register={register("password")} error={formState.errors.password?.message} type="password" />
                 <FormInput label="Confirm Password" register={register("confirmPassword")} error={formState.errors.confirmPassword?.message} type="password" />
                 <button type="submit">Registrarse</button>
-                <p>¿Ya tienes una cuenta? <Link to={"/login"}>Inicia sesión</Link></p>
+                <p>¿Ya tienes una cuenta? <Link to={"/"}>Inicia sesión</Link></p>
             </form>
         </div>
     );
