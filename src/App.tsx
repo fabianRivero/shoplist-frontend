@@ -1,15 +1,18 @@
 import { BrowserRouter } from "react-router-dom"
 import { AuthProvider } from "./auth/context"
 import { AppRouter } from "./routes/AppRouter"
+import { ModalProvider } from "./shared/components/modal/context"
 
 
 function App() {
 
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
+      <ModalProvider>
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
+      </ModalProvider>
     </AuthProvider>
   )
 }

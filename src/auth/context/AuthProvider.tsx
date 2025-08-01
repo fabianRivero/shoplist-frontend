@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const token = TokenStorage.getToken();
-        console.log(token)
         if(token){
             try{
                 const user: User = TokenStorage.decodeToken(token);

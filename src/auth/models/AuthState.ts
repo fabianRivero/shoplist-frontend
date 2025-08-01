@@ -4,7 +4,7 @@ export enum AuthActionType {
 };
 
 export interface User {
-    id: number;
+    id: string;
     username: string;
     email: string;
     role: string;
