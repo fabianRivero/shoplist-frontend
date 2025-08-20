@@ -1,12 +1,13 @@
 import { AuthService } from "../auth/services/AuthService"
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../auth/context";
 import { AuthActionType } from "../auth/models";
 import { useNavigate } from "react-router-dom";
+import { ShopListContainer } from "./shop-list/ShopListContainer";
 
 export const MainMenu = () => {
-    const { dispatch } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { state, dispatch } = useContext(AuthContext);
 
     const logout = async () => {
         try{
@@ -23,12 +24,30 @@ export const MainMenu = () => {
     const goToItems = async () => {
         navigate("/item-list")
     }
+    
+    useEffect(() => {
+        if(!state.isAuthenticated) {
+        navigate("/");
+        }
+
+    }, [state.isAuthenticated, navigate]);
 
     return(
-        <div>
-            <h1>Main Menu</h1>
-            <button onClick={logout}>Cerrar Sesión</button>
-            <button onClick={goToItems}>Productos</button>
-        </div>
+        <>
+            <header>
+                <div>LOGO</div>
+                <nav>
+                    <button onClick={logout}>Cerrar Sesión</button>
+                    <button onClick={goToItems}>Productos</button>    
+                </nav>
+            </header>
+           
+            <main>
+                <section>
+                    <h2>Compras de hoy</h2>
+                    <ShopListContainer/>
+                </section>
+            </main>
+        </>
     )
 }

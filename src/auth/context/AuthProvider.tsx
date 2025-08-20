@@ -5,7 +5,8 @@ import { AuthContext } from "./AuthContext";
 
 const initialState: AuthState = {
     isAuthenticated: false,
-    user: null
+    user: null,
+    loading: true
 };
 
 const authContext = AuthContext;
@@ -13,10 +14,13 @@ const authContext = AuthContext;
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch(action.type){
         case AuthActionType.LOGIN:
-            return{isAuthenticated: true, user: action.payload}
+            return{ isAuthenticated: true, user: action.payload, loading: false }
         case AuthActionType.LOGOUT:
-            return initialState;
-        default: return state;
+            return { ...initialState, loading: false } 
+        case AuthActionType.LOADED:
+            return { ...state, loading: false }
+        default: 
+        return state;
     }
 }
 
@@ -32,7 +36,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             } catch (error){
                 console.error("Token invalido", error);
                 TokenStorage.removeToken();
+                dispatch({ type: AuthActionType.LOADED, payload: false });
             }
+        } else {
+            dispatch({ type: AuthActionType.LOADED, payload: false });
         }
     }, [])
     return(

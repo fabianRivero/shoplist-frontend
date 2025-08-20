@@ -38,7 +38,6 @@ export const Modal = ({ children }: Props) => {
     if(!modalRoot) return null;
     return createPortal(
         <>
-        {console.log("modal montado")}
         <div className="overlay" onClick={closeModal}>
             <div className="modal" onClick={handleContentClick} ref={modalRef}>
                 <button className="close-button" onClick={closeModal}>Cerrar</button>

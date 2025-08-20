@@ -27,11 +27,26 @@ export const ShopItemList = ({ items }: Props) => {
                 type: ShopItemActionType.DELETE_ITEM,
                 payload: id
             })
+
         }
     }
 
     const handleEdit = (id: string) => {
         navigate(`/edit-item/${id}`)
+    }
+
+    const getTodayDate = () => {
+        const today = new Date();
+        // Obtener partes locales de la fecha
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`; // formato 'YYYY-MM-DD' en local
+    };
+
+    const newPurchase = (id: string) => {
+        const date = getTodayDate();
+        navigate(`/add-purchase/${date}/${id}`)
     }
 
     return(
@@ -41,6 +56,7 @@ export const ShopItemList = ({ items }: Props) => {
                 <ShopItem key={item.id} shopItem={item}>
                     <button onClick={() => handleDelete(item.id)}>Eliminar</button>
                     <button onClick={() => handleEdit(item.id)}>Editar</button>
+                    <button onClick={() => newPurchase(item.id)}>Agregar compra</button>
                 </ShopItem>
             ))
         }</ul>

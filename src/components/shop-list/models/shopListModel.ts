@@ -4,11 +4,23 @@ export interface Purchase extends Pick<shopItem,
  "name" | "quantity" | "unit" | "price" | "currency" | "brand" | "sector"> {
     productId: string;
     purchaseQuantity: number;
-    purchaseId: string;
+    purchaseId?: string;
 }
 
 export interface ShopList {
+    date: string | undefined;
     userId: string;
-    date: string | Date;
     purchases: Purchase[];
 }
+
+export interface logs {
+    logs: ShopList[]
+}
+
+export interface getPeriodPurchasesResponse {
+    register: logs,
+    period: string,
+    startDate?: string,
+    endDate?: string
+}
+

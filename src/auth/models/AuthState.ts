@@ -1,6 +1,7 @@
 export enum AuthActionType {
   LOGIN = "LOGIN",
   LOGOUT = "LOGOUT",
+  LOADED = "LOADED"  
 };
 
 export interface User {
@@ -11,10 +12,12 @@ export interface User {
 }
 
 export interface AuthState { 
-    isAuthenticated: boolean;
-    user: User | null;
+  isAuthenticated: boolean;
+  user: User | null;
+  loading: boolean
 }
 
 export type AuthAction = 
-    | {type: AuthActionType.LOGIN; payload: User}
-    | {type: AuthActionType.LOGOUT}
+  | { type: AuthActionType.LOGIN; payload: User  }
+  | { type: AuthActionType.LOADED; payload: boolean }
+  | { type: AuthActionType.LOGOUT };

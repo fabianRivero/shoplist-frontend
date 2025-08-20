@@ -7,8 +7,11 @@ export interface shopItem {
     price: number;
     currency: string;
     brand?: string;
-    sector: string; 
+    sector?: string; 
 }
 
 export type CreateShopItem = Omit<shopItem, "id">;
-export type UpdateShopItem = shopItem;
+
+export type GetShopItem = {
+    item: shopItem;
+};

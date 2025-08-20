@@ -1,6 +1,7 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { shopItem, ShopItemAction, ShopItemActionType, ShopItemState } from "../../models";
 import { ShopItemContext } from "./ShopItemContext";
+import { shopItemsService } from "../../services/shopItemService";
 
 const initialState: ShopItemState = {
     items: new Map()
@@ -42,7 +43,6 @@ const shopItemReducer = (state: ShopItemState, action: ShopItemAction): ShopItem
         case ShopItemActionType.UPDATE_ITEM: {
             if (!state.items.has(action.payload.id)) {
                 console.error("Este item no existe");
-                console.log("no pasa ahora", state)
                 return state;
             }
 
@@ -73,6 +73,17 @@ const shopItemReducer = (state: ShopItemState, action: ShopItemAction): ShopItem
 
 export const ShopItemProvider = ({ children }: { children: React.ReactNode }) => {
     const [state, dispatch] = useReducer(shopItemReducer, initialState);
+
+      useEffect(() => {
+        (async () => {
+        try {
+            const items = await shopItemsService.getItems();
+            dispatch({ type: ShopItemActionType.NEW, payload: items });
+        } catch (err) {
+            console.error("Error cargando items", err);
+        }
+        })();
+    }, []);
 
     return <ShopItemContext.Provider value={{ state, dispatch }}>{children}</ShopItemContext.Provider>;
 };

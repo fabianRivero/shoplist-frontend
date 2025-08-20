@@ -1,32 +1,80 @@
-import axios from "axios";
-import { Purchase } from "../models/shopListModel";
+import { getPeriodPurchasesResponse, Purchase, ShopList } from "../models/shopListModel";
+import { apiFetch } from "../../../shared/adapters/ApiAdapter";
+
+function getLocalDate(): string {
+  return new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD en local
+}
+
+function getTimeZone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
 
 class PurchaseService {
-    private BASE_URL = "http://localhost:3000"
+    private BASE_URL = "http://localhost:3000/api/purchases"
 
-    async createPurchase(data: Purchase): Promise<Purchase>{
-        const response = await axios.post<Purchase>(`${this.BASE_URL}/`, data);
-        return response.data;
+    async createPurchase(data: ShopList): Promise<Purchase>{
+        const response = await apiFetch(`${this.BASE_URL}/`, {
+            method: "POST",
+            body: JSON.stringify({
+                ...data,
+                timeZone: getTimeZone() 
+            })
+        });
+        const { item } = await response.json();
+        return item;
     }
     
-    async deletePurchase(id: string): Promise<void>{
-        const response = await axios.delete(`${this.BASE_URL}/${id}`);
-        return response.data;
+    async deletePurchase(date: string, purchaseId: string | undefined): Promise<void>{
+        await apiFetch(`${this.BASE_URL}/${date}`, {
+            method: "DELETE",
+            body: JSON.stringify({
+                purchaseId,
+                timeZone: getTimeZone()
+            })            
+        });
     }
 
-    async updatePurchase(data: Purchase): Promise<Purchase>{
-        const response = await axios.put<Purchase>(`${this.BASE_URL}/${data.purchaseId}`, data);
-        return response.data;
+//     {
+//   "purchaseId": "af075b36-4769-4f22-812a-c449b712f042",
+//   "purchaseQuantity": 3,
+//   "price": 13
+// }
+
+    async updatePurchase(data: ShopList): Promise<Purchase>{
+        const response = await apiFetch(`${this.BASE_URL}/${data.date}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                purchaseId: data.purchases[0].purchaseId,
+                purchaseQuantity: data.purchases[0].purchaseQuantity,
+                price: data.purchases[0].price,
+                timeZone: getTimeZone() // enviamos la zona horaria
+            })
+        });
+        return response.json();
     }
 
-    async getPurchase(id: string): Promise<Purchase>{
-        const response = await axios.get<Purchase>(`${this.BASE_URL}/${id}`);
-        return response.data;
+    async getPurchasesByCharacteristic(
+        period: string = "day",
+        date: string = getLocalDate(),
+        sector?: string
+        ): Promise<getPeriodPurchasesResponse> {
+        const params = new URLSearchParams({
+            period,
+            baseDate: date,
+            timeZone: getTimeZone(),
+            ...(sector ? { sector } : {}),
+        });
+
+        const response = await apiFetch(`${this.BASE_URL}/summary?${params.toString()}`, {
+            method: "GET",
+        });
+        return await response.json();
     }
 
-    async getPurchases(): Promise<Purchase[]> {
-        const response = await axios.get<{ items: Purchase[] }>(`${this.BASE_URL}/api/purchases`);
-        return response.data.items;
+    async getPurchases(): Promise<ShopList[]> {
+        const response = await apiFetch(`${this.BASE_URL}`);
+        const { items } = await response.json();
+        return items;
     }
 }
 

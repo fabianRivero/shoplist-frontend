@@ -7,19 +7,27 @@ import { ShopItemForm } from "./components/ShopItemForm"
 import { ModalContext } from "../../shared/components/modal/context"
 import { useAxios } from "../../shared/hooks/useAxios"
 import { Modal } from "../../shared/components/modal/Modal"
+import { useNavigate } from "react-router-dom"
 
 export const ShopItemsContainer = () => {
     const serviceCall = useCallback(() => shopItemsService.getItems(), [])
     const { setState } = useContext(ModalContext)
     const { state, dispatch } = useContext(ShopItemContext)
+    const navigate = useNavigate();
+
 
     const { isLoading, data: items, error } = useAxios<void, shopItem[]>({
         serviceCall,
         trigger: true
     })
+
     const openModal = () => {
         setState(true)
 
+    }
+
+    const backToMenu = () => {
+        navigate("/main-menu")
     }
 
     useEffect(() => {
@@ -39,6 +47,7 @@ export const ShopItemsContainer = () => {
             <div>No hay productos</div>
             }
             <button onClick={openModal}>Crear nuevo producto</button>
+            <button onClick={backToMenu}>Volver al menú principal</button>
             <Modal>
                 <ShopItemForm />
             </Modal>

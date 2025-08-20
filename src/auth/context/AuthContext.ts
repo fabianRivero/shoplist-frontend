@@ -4,7 +4,8 @@ import { AuthAction, AuthState } from "../models";
 
 const initialState: AuthState = {
     isAuthenticated: false,
-    user: null
+    user: null,
+    loading: false
 };
 
 export const AuthContext = createContext<{
