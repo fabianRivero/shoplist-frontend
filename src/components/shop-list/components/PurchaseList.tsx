@@ -24,8 +24,7 @@ export const PurchaseList = ({ purchases, date }: Props) => {
 
     const handleDelete = async (purchaseId: string | undefined, date: string | undefined) => {
         if(!purchaseId || !date) return;
-
-        
+      
         try {
           await executeDeletePurchaseFetch(purchaseId); 
           dispatch({

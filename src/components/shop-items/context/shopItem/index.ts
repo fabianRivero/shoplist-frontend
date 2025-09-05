@@ -1,2 +1,2 @@
 export * from "./ShopItemContext";
-export * from "./ShopItemProvider";
+export * from "./ShopItemReducer";

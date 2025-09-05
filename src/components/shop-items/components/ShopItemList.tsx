@@ -37,11 +37,10 @@ export const ShopItemList = ({ items }: Props) => {
 
     const getTodayDate = () => {
         const today = new Date();
-        // Obtener partes locales de la fecha
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, "0");
         const day = String(today.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`; // formato 'YYYY-MM-DD' en local
+        return `${year}-${month}-${day}`;
     };
 
     const newPurchase = (id: string) => {

@@ -2,7 +2,7 @@ import { getPeriodPurchasesResponse, Purchase, ShopList } from "../models/shopLi
 import { apiFetch } from "../../../shared/adapters/ApiAdapter";
 
 function getLocalDate(): string {
-  return new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD en local
+  return new Date().toLocaleDateString("en-CA"); 
 }
 
 function getTimeZone(): string {
@@ -34,12 +34,6 @@ class PurchaseService {
         });
     }
 
-//     {
-//   "purchaseId": "af075b36-4769-4f22-812a-c449b712f042",
-//   "purchaseQuantity": 3,
-//   "price": 13
-// }
-
     async updatePurchase(data: ShopList): Promise<Purchase>{
         const response = await apiFetch(`${this.BASE_URL}/${data.date}`, {
             method: "PUT",
@@ -47,7 +41,7 @@ class PurchaseService {
                 purchaseId: data.purchases[0].purchaseId,
                 purchaseQuantity: data.purchases[0].purchaseQuantity,
                 price: data.purchases[0].price,
-                timeZone: getTimeZone() // enviamos la zona horaria
+                timeZone: getTimeZone() 
             })
         });
         return response.json();
@@ -65,7 +59,7 @@ class PurchaseService {
             ...(sector ? { sector } : {}),
         });
 
-        const response = await apiFetch(`${this.BASE_URL}/summary?${params.toString()}`, {
+        const response = await apiFetch(`${this.BASE_URL}/filters?${params.toString()}`, {
             method: "GET",
         });
         return await response.json();

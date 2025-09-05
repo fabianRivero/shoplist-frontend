@@ -42,23 +42,6 @@ export const ShopItemForm = () => {
         serviceCall: getItemServiceCall,
     })
 
-    useEffect(() => {
-        if (id) {
-            let item;
-            (async () => {
-                const getItem = async () => await getItemServiceCall(id)
-                item = await getItem();
-                if(!getItemError){
-                    dispatch({
-                        type: ShopItemActionType.SET_ITEM,
-                        payload: item
-                    })
-                }
-                reset(item)
-            })()
-        }
-    }, [id, reset, state.items, getItemServiceCall, dispatch, getItemError])
-
     const onSubmit = async (data: ShopItemFormData) => {
         try{
             const userId = userState.state.user?.id
@@ -78,6 +61,7 @@ export const ShopItemForm = () => {
             } else{
                 result = await shopItemsService.createItem(fullData);
                 dispatch({ type: ShopItemActionType.CREATE, payload: result });
+
             }
 
 
@@ -87,6 +71,24 @@ export const ShopItemForm = () => {
             if(error instanceof Error) alert(error.message || "Error en la operación")
         }
     }
+
+    useEffect(() => {
+        if (id) {
+            let item;
+            (async () => {
+                const getItem = async () => await getItemServiceCall(id)
+                item = await getItem();
+                if(!getItemError){
+                    dispatch({
+                        type: ShopItemActionType.SET_ITEM,
+                        payload: item
+                    })
+                }
+                reset(item)
+            })()
+        }
+    }, [id, reset, state.items, getItemServiceCall, dispatch, getItemError])
+
     if(isLoading) return <p>Cargando productos...</p>
     if(getItemError) return <p>Error: {getItemError}</p>
 
