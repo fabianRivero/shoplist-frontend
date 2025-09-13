@@ -1,4 +1,5 @@
 import { UseFormRegisterReturn } from "react-hook-form";
+import "./form-input.scss";
 
 type Props = {
     label: string;
@@ -9,13 +10,14 @@ type Props = {
     disabled?: boolean;
 }
 
-export const FormInput = ({ label, register, error, type= "text" }: Props) =>(
-    <div className="formgroup">
+export const FormInput = ({ label, register, error, type= "text" }: Props) => (
+    <div className="form-input">
         <label>{label}</label>
         <input 
         type={type} 
-        step={type==="number" ? "0.01" : undefined}
+        step={type==="number" ? "any" : undefined}
+        inputMode={type === "number" ? "decimal" : undefined}
         {...register} />
-        {error && <span className="error">{error}</span>}
+        {error && <span className="error-message">{error}</span>}
     </div>
 )

@@ -1,0 +1,26 @@
+@import "../../../../shared/styles/colors";
+@import "../../../../shared/styles/box-style";
+
+
+.shop-item-list-container {
+    @include box-style();
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+    margin-top: 80px;
+
+
+    .shop-item-list{
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .buttons{
+        gap: 4px;
+        .shop-item-button{
+            padding: 4px 6px;
+        }
+    }  
+}

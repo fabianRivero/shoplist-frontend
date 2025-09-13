@@ -1,0 +1,18 @@
+.budget-summary-container{
+    padding: 20px;
+    padding-top: 80px;
+
+}
+
+.budget-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tables-container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}

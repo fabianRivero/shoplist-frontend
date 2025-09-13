@@ -1,0 +1,16 @@
+@import './colors';
+@import './fonts';
+
+@mixin button-style($bg: $green, $hover: $green-hover) {
+  background-color: $bg;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $hover;
+  }
+}

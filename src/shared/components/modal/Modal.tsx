@@ -1,6 +1,7 @@
 import { ReactNode, useContext, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { ModalContext } from "./context";
+import "./modal.scss";
 
 interface Props {
     children: ReactNode
@@ -37,14 +38,12 @@ export const Modal = ({ children }: Props) => {
     const modalRoot = document.getElementById("modal")
     if(!modalRoot) return null;
     return createPortal(
-        <>
         <div className="overlay" onClick={closeModal}>
             <div className="modal" onClick={handleContentClick} ref={modalRef}>
-                <button className="close-button" onClick={closeModal}>Cerrar</button>
+                <button className="close-button" onClick={closeModal}>X</button>
                 {children}
             </div>
-        </div>
-        </>,
+        </div>,
         modalRoot
     )
 }

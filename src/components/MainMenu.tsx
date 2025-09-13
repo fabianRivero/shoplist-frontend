@@ -1,21 +1,42 @@
 import { ShopListContainer } from "./shop-list/ShopListContainer";
 import { SummaryContainer } from "./summary/SummaryContainer";
+import { useNavigate } from "react-router-dom";
+import "./main-menu.scss";
 
 export const MainMenu = () => {
 
-    return(
-        <>
-            <main>
-                <section>
-                    <h2>Compras de hoy</h2>
-                    <ShopListContainer period="day" mode="editable"/>
-                </section>
+    const navigate = useNavigate();
 
-                <section>
+    const addPurchase = () => {
+        navigate("/item-list")
+    }
+
+    const goToBudgets = () => {
+        navigate("/budget-planning")
+    }
+
+    return(
+        <main className="main-menu">
+            <section className="menu-section">
+                <div className="summary-header">
+                    <h2>Compras de hoy</h2>
+                    <button onClick={addPurchase}>Agregar compra</button>
+                </div>
+
+                <ShopListContainer period="day"/>
+            </section>
+
+            <section className="menu-section">
+                <div className="summary-header">
                     <h2>Resumen de este mes</h2>
-                    <SummaryContainer />
-                </section>
-            </main>
-        </>
+                    <div>
+                        <button>Gestionar compras</button>
+                        <button onClick={goToBudgets}>Gestionar presupuestos</button>
+                    </div>
+                </div>                   
+
+                <SummaryContainer />
+            </section>
+        </main>
     )
 }

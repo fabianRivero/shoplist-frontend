@@ -1,0 +1,13 @@
+@import "../../../shared/styles/fonts";
+@import "../../../shared/styles/colors";
+
+.summary-item{
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    
+
+    .sector-name{
+        font-size: $h4-size;
+    }
+}

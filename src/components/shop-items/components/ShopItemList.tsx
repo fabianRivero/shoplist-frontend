@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { shopItemsService } from "../services/shopItemService";
 import { ShopItem } from "./ShopItem";
 import { useAxios } from "../../../shared/hooks/useAxios";
+import  "./styles/shop-item-list.scss";
 
 interface Props {
     items: shopItem[],
@@ -49,15 +50,20 @@ export const ShopItemList = ({ items }: Props) => {
     }
 
     return(
-        <ul>
-            {
-            items.map((item) => (
-                <ShopItem key={item.id} shopItem={item}>
-                    <button onClick={() => handleDelete(item.id)}>Eliminar</button>
-                    <button onClick={() => handleEdit(item.id)}>Editar</button>
-                    <button onClick={() => newPurchase(item.id)}>Agregar compra</button>
-                </ShopItem>
-            ))
-        }</ul>
+        <main className="shop-item-list-container">
+            <h1>Lista de productos</h1>
+            <ul className="shop-item-list">
+                {
+                items.map((item) => (
+                    <ShopItem key={item.id} shopItem={item}>
+                        <div className="buttons">
+                            <button className="shop-item-button" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                            <button className="shop-item-button" onClick={() => handleEdit(item.id)}>Editar</button>
+                            <button className="shop-item-button" onClick={() => newPurchase(item.id)}>Agregar compra</button>
+                        </div>
+                    </ShopItem>
+                ))
+            }</ul>
+        </main>
     )
 }

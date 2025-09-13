@@ -1,11 +1,13 @@
 import React, { useCallback, useContext, useEffect } from "react";
 import { SummarySectorItem } from "./components/SummarySectorItem";
 import { SummaryContext } from "./context/summaryContext";
-import { Budget, Summary } from "./models/summaryModel";
+import { Summary } from "./models/summaryModel";
 import { summaryService } from "./services/summaryService";
 import { useAxios } from "../../shared/hooks/useAxios";
 import { SummaryActionType } from "./models/summaryState";
 import { PurchaseContext } from "../shop-list/context/ShopListContext";
+import "./summary-container.scss"
+import { capitalize, getMonth } from "../../shared/services";
 
 export const SummaryContainer = () => {
 
@@ -33,13 +35,6 @@ export const SummaryContainer = () => {
 
   const currentBudget = getCurrentBudget(summary, Number(month), year);
 
-  function getTotalSpentFromBudget(currentBudget: Budget | null | undefined) {
-    if (!currentBudget) return 0;
-    return currentBudget.sectors.reduce((sum, sector) => sum + sector.spent, 0);
-  }
-
-  const totalSpent = getTotalSpentFromBudget(currentBudget);
-
   useEffect(() => {
      if(summary){
       summaryContext.dispatch({ type: SummaryActionType.GET, payload: summary })
@@ -55,68 +50,68 @@ export const SummaryContainer = () => {
   if(error) return <p>Error: {error}</p>
 
   return (
-    <div>
-      <div>
-        {summary === null && currentBudget === null ? (
-          <p>no hay resumen disponible</p>
-        ) : (
-          <>
-            <h3>Gasto general: ${totalSpent}</h3>
+    <>
+      {summary === null && currentBudget === null ? (
+        <h3 className="not-found-message">no hay resumen disponible</h3>
+      ) : (
+        <div className="summary">
+          <span className="month">{capitalize(getMonth({ num: Number(month) }))} - {year}</span>
+          <h3>Gasto general: {summary?.totalSpent}$</h3>
 
-            {summary?.totalSpent ? (
-            <h4>Gastos por sector:</h4> 
-            ) : (
-              <div></div>
-            )}
-            <ul>
-              {summary?.spentBySector ? (
-                Object.entries(summary.spentBySector).map(([sector, amount]) => (
-                  <SummarySectorItem key={sector} sector={sector} expense={amount} type="expense" />
-                ))
-              ) : (
-                <div></div>
-              )}
-            </ul>
-            <div>
-              
-              {summary?.budgets ? (
-                summary.budgets.map((monthBudget) => {
-    
-                  return (
-                    <React.Fragment key={`${monthBudget.year}-${monthBudget.month}`}>
-                      {monthBudget.general === 0 ? (
-                        <div></div>
-                      ) : (
-                      <h3>Presupuesto mensual restante: ${monthBudget.general - summary.totalSpent}</h3>
-                      )}
-                      {}
-                      {monthBudget.sectors && monthBudget.sectors.length > 0 ? (
-                      <>
+          {summary?.totalSpent ? (
+          <>
+            <div className="by-sector">
+              <h4>Gastos por sector:</h4>
+              <ul className="sector-list"> 
+                {summary?.spentBySector ? (
+                  Object.entries(summary.spentBySector).map(([sector, amount]) => (
+                    <SummarySectorItem key={sector} sector={sector} expense={amount} type="expense" />
+                  ))
+                ) : (
+                  <div></div>
+                )}
+              </ul>
+            </div>
+
+            {summary?.budgets ? (
+              summary.budgets.map((monthBudget) => {  
+                return (
+                  <React.Fragment key={`${monthBudget.year}-${monthBudget.month}`}>
+                    {monthBudget.general === 0 ? (
+                      <div></div>
+                    ) : (
+                    <h3>Presupuesto mensual restante: {monthBudget.general - summary.totalSpent}$</h3>
+                    )}
+                    {monthBudget.sectors && monthBudget.sectors.length > 0 ? (
+                    <div className="by-sector">
                       <h4>Presupuesto por sector:</h4>
-                      <ul>
+                      <ul className="sector-list">
                         {monthBudget.sectors && monthBudget.sectors.length > 0  ? (
                           monthBudget.sectors.map(({ sector, budget = 0 }) => ( 
                             <SummarySectorItem key={sector} sector={sector} budget={budget} type="budget" />
                           ))
                         ) : (
-                          <p>Presupuesto no establecido</p>
+                          <p className="not-found-message">Presupuesto no establecido</p>
                         )}
                       </ul>
-                      </>
-                      ) : (
-                        <div><h4>Presupuesto no establecido</h4></div>
-                      )}
-                    </React.Fragment>   
-                  )}
-                )
-              ): (
-                <div></div>
-              )}  
+                    </div>
+                    ) : (
+                      <h4 className="not-found-message">Presupuesto no establecido</h4>
+                    )}
+                  </React.Fragment>   
+                )}
+              )
+            ) : (
+              <div></div>
+            )}  
 
-            </div>
           </>
-        )}
-      </div>
-    </div>
+          ) : (
+            <div></div>
+          )}
+
+        </div>
+      )}
+    </>
   );
 };

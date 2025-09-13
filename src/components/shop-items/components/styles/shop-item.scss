@@ -1,0 +1,17 @@
+.shop-item{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .item{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .item-stat{
+        display: flex;
+        gap: 5px;
+        align-items: flex-end;
+    }
+}

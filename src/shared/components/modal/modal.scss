@@ -1,0 +1,42 @@
+@import "../../../shared/styles/colors";
+
+.overlay{
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    z-index: 2000;  
+    background-color: rgba($black, 0.9);
+    width: 100vw;
+    height: 100vh;
+
+    .modal{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: $box-background;
+        padding: 35px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 90%;
+        max-height: 80%;
+        overflow-y: auto;
+        z-index: 3000;
+
+        .close-button {
+            position: absolute;
+            top: 12px;
+            right: 17px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            color: $black;
+
+            &:hover {
+                color: darken($black, 10%);
+            }
+        }
+    }
+}

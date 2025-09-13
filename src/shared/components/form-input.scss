@@ -1,0 +1,27 @@
+@import "../../shared/styles/fonts";
+@import "../../shared/styles/colors";
+
+.form-input{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    
+    label{
+        font-size: $h4-size;
+    }
+
+    input{
+        border-radius: 3px;
+        border: .5px solid $black;
+
+        &:hover {
+            border: .5px solid $green-hover;
+            border-radius: 3px;
+        }
+
+        &:focus {
+            outline: .5px solid $green-hover;
+            border-radius: 3px;
+        }
+    }
+}

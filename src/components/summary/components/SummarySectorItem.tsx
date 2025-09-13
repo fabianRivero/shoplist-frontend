@@ -1,3 +1,6 @@
+import { capitalize } from "../../../shared/services";
+import "./summary-sector-item.scss"
+
 interface Props {
   sector: string;
   expense?: number;
@@ -6,21 +9,21 @@ interface Props {
 }
 
 export const SummarySectorItem = ({ sector, expense, budget, type }: Props) => {
-  // console.log(sector, expense, budget)
+    
   return (
     <>
       {type === "budget" ? (
-        <li>
-          <span>{sector}:</span>{" "}
+        <li className="summary-item">
+          <span className="sector-name">{capitalize(sector)}:</span>{" "}
           {budget === undefined || budget === 0 ? (
-            <span>Presupuesto no establecido</span>
+            <span className="not-found-message">Presupuesto no establecido</span>
           ) : (
             <span>{budget}$</span>
           )}
         </li>
       ) : (
-        <li>
-          <span>{sector}:</span>{" "}
+        <li className="summary-item">
+          <span className="sector-name">{capitalize(sector)}:</span>{" "}
           <span>{expense}$</span>
         </li>
       )}

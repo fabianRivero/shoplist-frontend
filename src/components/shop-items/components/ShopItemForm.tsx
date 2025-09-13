@@ -10,6 +10,9 @@ import { ModalContext } from "../../../shared/components/modal/context";
 import { FormInput } from "../../../shared/components";
 import { AuthContext } from "../../../auth/context";
 import { useAxios } from "../../../shared/hooks/useAxios";
+import "./styles/shop-item-form.scss";
+import { FormSelect } from "../../../shared/components/FormSelect";
+import { capitalize } from "../../../shared/services";
 
 const shopItemSchema = z.object(
     {
@@ -23,11 +26,14 @@ const shopItemSchema = z.object(
         sector: z.string().min(1, "Sector es necesario"),        
     })
 
-    type ShopItemData = z.infer<typeof shopItemSchema>
-    type ShopItemFormData = Omit<ShopItemData, "userId">
+type ShopItemData = z.infer<typeof shopItemSchema>
+type ShopItemFormData = Omit<ShopItemData, "userId">
+type Props = {
+  isModal?: boolean;
+};
 
 
-export const ShopItemForm = () => {
+export const ShopItemForm = ({ isModal = false }: Props) => {
     const { id } = useParams()
     const { register, handleSubmit, formState, reset } = useForm<ShopItemFormData>({
         resolver: zodResolver(shopItemSchema.omit({ userId: true }))
@@ -42,12 +48,19 @@ export const ShopItemForm = () => {
         serviceCall: getItemServiceCall,
     })
 
+    const selectOptions = [
+        { value: "Alimentos", label: "Alimentos" },
+        { value: "Bebidas", label: "Bebidas" },
+        { value: "Limpieza", label: "Limpieza" },
+        { value: "Tecnología", label: "Tecnología" },
+        { value: "Ropa", label: "Ropa" },
+    ]
+
     const onSubmit = async (data: ShopItemFormData) => {
         try{
             const userId = userState.state.user?.id
             if(!userId) throw new Error("Usuario no encontrado");
 
-            
             const fullData: ShopItemData = {
                 ...data,
                 userId: userId,
@@ -63,7 +76,6 @@ export const ShopItemForm = () => {
                 dispatch({ type: ShopItemActionType.CREATE, payload: result });
 
             }
-
 
              modalSetState(false)
             navigate("/item-list")
@@ -93,7 +105,7 @@ export const ShopItemForm = () => {
     if(getItemError) return <p>Error: {getItemError}</p>
 
     return(
-        <div className="container">
+        <div className={`shop-item-form ${isModal ? "form-modal" : "form-container"}`}>
             <h2>{id ? "Editar" : "Crear"} Producto</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -102,8 +114,8 @@ export const ShopItemForm = () => {
                 register={register("name")} 
                 error={formState.errors.name?.message} />
                 <FormInput 
-                label="Cantidad
-                " register={register("quantity", { valueAsNumber: true })} 
+                label="Cantidad" 
+                register={register("quantity", { valueAsNumber: true })} 
                 type="number" 
                 error={formState.errors.quantity?.message} />
                 <FormInput 
@@ -122,11 +134,17 @@ export const ShopItemForm = () => {
                 label="Marca" 
                 register={register("brand")} 
                 error={formState.errors.brand?.message} />
-                <FormInput 
-                label="Sector" 
-                register={register("sector")} 
-                error={formState.errors.sector?.message} />
- 
+                                
+                <FormSelect<ShopItemFormData>
+                label="Sector"
+                name="sector"
+                register={register}
+                error={formState.errors.sector?.message}
+                options={selectOptions}
+                allowCustom={true}
+                setValueAs={(v) => typeof v === "string" ? capitalize(v) : v}
+                />
+
                 <button type="submit">{id ? "Editar" : "Crear"}</button>
             </form>
         </div>

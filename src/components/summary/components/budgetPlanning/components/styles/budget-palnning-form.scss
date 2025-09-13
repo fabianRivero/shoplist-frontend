@@ -1,0 +1,19 @@
+@import "../../../../../../shared/styles/buttons";
+
+.budget-planning-form{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+    
+    div{
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
+    button{
+        @include button-style();
+    }
+}

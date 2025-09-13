@@ -1,16 +1,16 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { purchaseService } from "./services/shopListService";
-import { useNavigate } from "react-router-dom";
 import { useAxios } from "../../shared/hooks/useAxios";
 import { PurchaseActionType } from "./models/purchaseListState";
 import { PurchaseContext } from "./context/ShopListContext";
 import { PurchaseList } from "./components/PurchaseList";
 import { getPeriodPurchasesResponse } from "./models/shopListModel";
+import { motion, AnimatePresence } from "framer-motion";
+import "./shop-list-container.scss";
 
 type Props = {
     period?: string;
     baseDate?: string;
-    mode: "editable" | "resume";
 }
 
 const today = new Date();
@@ -19,10 +19,9 @@ const month = String(today.getMonth() + 1).padStart(2, "0");
 const day = String(today.getDate()).padStart(2, "0");
 const localDate = `${year}-${month}-${day}`;
 
-export const ShopListContainer = ({period = "day", baseDate = localDate, mode}: Props) => {
+export const ShopListContainer = ({period = "day", baseDate = localDate}: Props) => {
     const { state, dispatch } = useContext(PurchaseContext)
-    const navigate = useNavigate();
-    const [visibleCount, setVisibleCount] = useState(5);
+    const [visibleCount, setVisibleCount] = useState(3);
 
     const serviceCall = useCallback(() => purchaseService.getPurchasesByCharacteristic(period, baseDate), [period, baseDate])
 
@@ -30,10 +29,6 @@ export const ShopListContainer = ({period = "day", baseDate = localDate, mode}: 
         serviceCall,
         trigger: true
     })
-
-    const addPurchase = () => {
-        navigate("/item-list")
-    }
 
     const purchaseArray = state ? Array.from(state.purchases.values()).flat() : [];
     const visiblePurchases = purchaseArray.slice(0, visibleCount);
@@ -48,31 +43,43 @@ export const ShopListContainer = ({period = "day", baseDate = localDate, mode}: 
     if(error) return <p>Error: {error}</p>
     
     return(
-        <> 
-            <div>
-                Fecha: {baseDate}
-            </div>
-
+        <div className="purchase-list-container"> 
+            
+            <h3 className="date">Fecha: {baseDate}</h3>
+            
             {purchaseArray.length > 0 ? (
                 <>
-                    <PurchaseList purchases={visiblePurchases} date={baseDate} />
+                    <div className="purchase-list-wrapper">
+                        <AnimatePresence initial={false}>
+                            {visiblePurchases.map(purchase => (
+                                <motion.div
+                                    key={purchase.purchaseId}
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: "auto" }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <PurchaseList purchases={[purchase]} date={baseDate} />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+
                     {visibleCount < purchaseArray.length && (
-                        <button onClick={() => setVisibleCount(prev => prev + 5)}>
+                        <button onClick={() => setVisibleCount(prev => prev + 3)} className="show-button">
                             Mostrar más
                         </button>
                     )}
-                    {visibleCount > purchaseArray.length && (
-                        <button onClick={() => setVisibleCount(prev => prev - 5)}>
+                    {visibleCount > 3 &&  (
+                        <button onClick={() => setVisibleCount(prev => prev - 3)} className="show-button">
                             Mostrar menos
                         </button>
                     )}
                 </>
             ) : (
-                <div>No hay compras registradas</div>
+                <h3 className="not-found-message">No hay compras registradas</h3>
             )}
-            {mode === "editable" && (
-                <button onClick={addPurchase}>Agregar compra</button>
-            )}
-        </>
+
+        </div>
     )
 }

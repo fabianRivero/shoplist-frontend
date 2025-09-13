@@ -1,0 +1,20 @@
+@import "../../shared/styles/buttons";
+
+.shop-items-container{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    margin-bottom: 20px;
+    
+    .buttons{
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .shop-item-button{
+        @include button-style;
+        padding: 7px 10px;
+    }
+}

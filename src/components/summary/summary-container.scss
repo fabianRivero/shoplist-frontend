@@ -1,0 +1,29 @@
+@import "../../shared/styles/fonts";
+@import "../../shared/styles/colors";
+
+.summary{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.by-sector{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-bottom: 20px;
+    border-bottom: .1px solid $separator;
+    
+    .sector-list{
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0px;    
+    }
+}
+

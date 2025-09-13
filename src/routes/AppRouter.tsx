@@ -11,7 +11,6 @@ import { PurchaseProvider } from "../components/shop-list/context/ShopListReduce
 import { SummaryProvider } from "../components/summary/context/SummaryReducer";
 import { BudgetPlanningContainer } from "../components/summary/components/budgetPlanning/BudgetPlanningContainer";
 import { Header } from "../components/header/Header";
-import { BudgetProvider } from "../components/summary/components/budgetPlanning/context/BudgetReducer";
 
 const PrivateRoute = ({ children }: { children: ReactNode}) => {
     const { state } = useContext(AuthContext);
@@ -26,7 +25,7 @@ export const AppRouter = () => (
   <Routes>
     <Route path="/*" element={<AuthContainer />} />
     <Route path="/main-menu" element={<PrivateRoute><Header><SummaryProvider><PurchaseProvider><MainMenu/></PurchaseProvider></SummaryProvider></Header></PrivateRoute>} />
-    <Route path="/budget-planning" element={<PrivateRoute><Header><SummaryProvider><BudgetProvider><BudgetPlanningContainer/></BudgetProvider></SummaryProvider></Header></PrivateRoute>}/>
+    <Route path="/budget-planning" element={<PrivateRoute><Header><SummaryProvider><BudgetPlanningContainer/></SummaryProvider></Header></PrivateRoute>}/>
     <Route path="/item-list" element={<PrivateRoute><Header><ShopItemProvider><ShopItemsContainer/></ShopItemProvider></Header></PrivateRoute>}/>
     <Route path="/edit-item/:id" element={<PrivateRoute><Header><ShopItemProvider><ShopItemForm/></ShopItemProvider></Header></PrivateRoute>}/>
     <Route path="/add-purchase/:date/:id" element={<PrivateRoute><Header><ShopItemProvider><PurchaseForm mode="create"/></ShopItemProvider></Header></PrivateRoute>}/>

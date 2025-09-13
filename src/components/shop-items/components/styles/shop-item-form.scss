@@ -1,0 +1,55 @@
+@import "../../../../shared/styles/buttons";
+@import "../../../../shared/styles/colors";
+@import "../../../../shared/styles/box-style";
+
+.form-modal{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+
+    h2{
+        margin-top: 8px;
+    }
+
+    form{
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        button{
+            margin-top: 10px;
+            @include button-style();
+        }
+    }
+}
+
+
+.form-container{
+    @include box-style();
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    position: absolute;
+    top: 42%;             
+    left: 50%;            
+    transform: translate(-50%, -50%);
+
+    h2{
+        margin-top: 8px;
+    }
+
+    form{
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 80%;
+
+        button{
+            margin-top: 10px;
+            @include button-style();
+        }
+    }
+}
+

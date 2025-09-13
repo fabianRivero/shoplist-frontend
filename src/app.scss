@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900');
+@import "./shared/styles/colors";
+@import "./shared/styles/fonts";
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: $black;
+    list-style: none;
+    @include basic-font-style();
+}
+
+h1{
+    font-size: $h1-size;
+}
+
+h2{
+    font-size: $h2-size;
+}
+
+h3{
+    font-size: $h3-size;
+}
+
+h4{
+    font-size: $h4-size;
+}
+
+h5 {
+    font-size: $h4-size;
+}
+
+.not-found-message{
+    color: $mustard;
+}
+
+.error-message{
+    color: $red;
+}

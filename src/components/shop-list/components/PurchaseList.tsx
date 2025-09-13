@@ -6,6 +6,7 @@ import { purchaseService } from "../services/shopListService";
 import { useAxios } from "../../../shared/hooks/useAxios";
 import { PurchaseActionType } from "../models/purchaseListState";
 import { PurchaseItem } from "./PurchaseItem";
+import "./styles/purchase-list.scss"
 
 interface Props {
     purchases: Purchase[],
@@ -43,15 +44,17 @@ export const PurchaseList = ({ purchases, date }: Props) => {
 
   return (
     <>
-      <ul>
+      <ul className="purchase-list">
         {purchases.map((purchase) => (
           <PurchaseItem key={purchase.purchaseId} purchase={purchase}>
-            <button onClick={() => handleDelete(purchase.purchaseId, date)}>
-              Eliminar
-            </button>
-            <button onClick={() => handleEdit(purchase.purchaseId, date)}>
-              Editar
-            </button>
+            <div className="purchase-actions">
+              <button onClick={() => handleDelete(purchase.purchaseId, date)} className="purchase-button">
+                Eliminar
+              </button>
+              <button onClick={() => handleEdit(purchase.purchaseId, date)} className="purchase-button">
+                Editar
+              </button>
+            </div>
           </PurchaseItem>
         ))}
       </ul>

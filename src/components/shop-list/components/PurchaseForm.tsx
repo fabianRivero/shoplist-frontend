@@ -12,6 +12,7 @@ import { ShopItemContext } from "../../shop-items/context/shopItem";
 import { shopItem } from "../../shop-items/models";
 import { Purchase } from "../models/shopListModel";
 import { AuthContext } from "../../../auth/context";
+import "./styles/purchase-form.scss";
 
 const createPurchaseSchema = z.object({
   date: z.string(),
@@ -176,15 +177,13 @@ export const PurchaseForm = ({ mode }: Props) => {
   }, [id, date, reset, state, itemState.state.items, mode]);
 
   return(
-    <div>
+    <div className="purchase-form-container">
       <h2>{mode === "edit" ? "Actualizar compra" : "Añadir compra"}</h2>
-    <form onSubmit={handleSubmit(onSubmit, (errors) => {
-      console.log("Errores en el formulario:", errors);
-    })}>
-    {selectedItem && (
-    <div>
-    <h3>
-      {selectedItem.name}{" "}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {selectedItem && (
+        <div>
+          <h3>
+          {selectedItem.name}{" "}
       {showBrand(selectedItem.brand) && <span>({selectedItem.brand})</span>}
     </h3>
       <div>

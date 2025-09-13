@@ -9,9 +9,8 @@ import { Modal } from "../../../../shared/components/modal/Modal";
 import { BudgetPlanningForm } from "./components/BudgetPlanningForm";
 import { GeneralBudgetTable } from "./components/GeneralBudgetTable";
 import { SectorBudgetTable } from "./components/SectorBudgetTable";
-import "./styles/budget-planning-container.scss";
 
-export function BudgetPlanningContainer() {
+export function BudgetTableContainer() {
 
     const today = new Date();
     const year = today.getFullYear();
@@ -22,12 +21,10 @@ export function BudgetPlanningContainer() {
     const { setState } = useContext(ModalContext);
     const { state, dispatch } = useContext(SummaryContext);
     const [editingBudget, setEditingBudget] = useState<{
-    year: number;
-    month?: number;
-    sector?: string;   
-    defaultValue?: number;
-    isNewSector?: boolean;
-    isNewMonth?: boolean;
+        year: number;
+        month: number;
+        sector?: string;   
+        amount?: number;   
     } | null>(null);
 
     const getBudgetsServiceCall = useCallback(() => summaryService.getSummary(localDate, "year"), [localDate])
@@ -66,16 +63,9 @@ export function BudgetPlanningContainer() {
         executeDeleteSectorBudgetFetch({year, month, sector})
     }
 
-    const openModal = (
-    year: number,
-    month?: number,
-    sector?: string,
-    defaultValue?: number,
-    isNewSector = false,
-    isNewMonth = false
-    ) => {
-    setEditingBudget({ year, month, sector, defaultValue, isNewSector, isNewMonth });
-    setState(true);
+    const openModal = (year: number, month: number, sector?: string, amount?: number) => {
+        setEditingBudget({ year, month, sector, amount });
+        setState(true);
     };
 
     useEffect(() => {
@@ -128,18 +118,15 @@ export function BudgetPlanningContainer() {
             </div>
 
             <Modal>
-            {editingBudget && (
-                <BudgetPlanningForm
-                year={editingBudget.year}
-                month={editingBudget.month}
-                sector={editingBudget.sector}
-                defaultValue={editingBudget.defaultValue}
-                isNewSector={editingBudget.isNewSector}
-                isNewMonth={editingBudget.isNewMonth}
-                />
-            )}
+                {editingBudget && (
+                    <BudgetPlanningForm
+                    year={editingBudget.year}
+                    month={editingBudget.month}
+                    sector={editingBudget.sector}
+                    defaultValue={editingBudget.amount}
+                    />
+                )}
             </Modal>
-
             </div>
         ) : (
             <p className="error-message">Error al cargar resumen</p>

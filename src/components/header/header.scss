@@ -1,0 +1,157 @@
+@import '../../shared/styles/buttons';
+@import '../../shared/styles/colors';
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    background-color: white;
+    width: 100%;
+    z-index: 1000;
+}
+
+.burgerButton{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    cursor: pointer;
+    right: 15px;
+    top: 10px;
+
+    .line{
+        height: 3px;
+        width: 22px;
+        border-radius: 20px;
+        background-color: $black;
+    }
+
+    &:hover {
+        .line{
+            background-color: $black-hover;
+        }
+    }
+}
+
+.burgerMenuClosed {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 230px;
+    background-color: white;
+    box-shadow: 2px 0 5px $box-shadow;
+    z-index: 1000;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%);
+
+    .burgerButton{
+       position: fixed;
+       right: 15px;
+       top: 15px;
+    }
+}
+
+.burgerMenuOpen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 230px;
+    background-color: white;
+    box-shadow: 2px 0 5px $box-shadow;
+    z-index: 1000;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(0);
+
+    .burgerButton{
+        position: fixed;
+        right: 15px;
+        top: 15px;
+    }
+}
+
+.burgerList {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    top: 30px;
+    width: 200px;
+    gap: 5px;
+    color: $black;
+}
+
+.headerList {
+    display: none;
+}
+
+.closed{
+    display: none;
+}
+
+.open{
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    z-index: 900;  
+    background-color: $black;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.5;
+}
+
+.link-button {
+    @include button-style();
+    width: 90%;
+    height: 45px;
+}
+
+@media (min-width: 768px) {
+    .burgerButton {
+        display: none;
+    }
+    .headerList {
+        display: flex;
+        gap: 20px;
+        list-style: none;
+        margin-right: 20px;
+    }
+    .burgerMenuClosed {
+        display: none;
+    }
+    .burgerMenuOpen {
+        display: none;
+    }
+    .burgerList {
+        display: none;
+    }
+    .closed {
+        display: none;
+    }
+    .open {
+        display: none;
+    }
+    .link-button{
+        width: auto;
+        height: auto;
+        padding: 10px 15px;
+        background-color: transparent;
+        color: $black;
+
+        &:hover {
+            background-color: lighten($black-hover, 10%);
+            color: white;
+        }
+    }
+}

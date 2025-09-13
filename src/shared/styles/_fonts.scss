@@ -1,0 +1,15 @@
+@import "./colors";
+
+$font-size-base: .9rem;
+$h1-size: 1.5rem;
+$h2-size: 1.4rem;
+$h3-size: 1.1rem;
+$h4-size: 1rem;
+
+@mixin basic-font-style() {
+  color: $black;
+  font-size: $font-size-base;
+  font-family: "Lexend", "Montserrat", sans-serif;
+  font-weight: normal;
+}
+

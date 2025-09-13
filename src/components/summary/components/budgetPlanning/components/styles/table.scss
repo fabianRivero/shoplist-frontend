@@ -1,0 +1,88 @@
+@import "../../../../../../shared/styles/fonts";
+@import "../../../../../../shared/styles/colors";
+@import "../../../../../../shared/styles/buttons";
+
+.table{
+  table-layout: fixed;  
+  width: 100%;          
+  border-collapse: collapse;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  table{
+    border: 1px solid $separator;
+    border-collapse: collapse;
+    background-color: $box-background;
+
+    thead{
+      background: $green;
+      
+      th{
+        font-size: $h3-size;
+        padding: 8px;
+        color: $box-background;
+      }
+    }
+
+    button{
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: $green;
+      
+      &:hover{
+        color: $green-hover;
+      } 
+    }
+
+    tbody{
+      tr{
+        .month-cell{
+         border-right: solid 1px $separator;
+        }
+
+        td{
+          padding: 8px 15px;
+          text-align: center;          
+        }
+        
+        & td:last-child{
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+    }
+  }
+}
+
+.general{
+  tbody{
+    & tr:nth-child(even){
+      background-color: lighten($separator, $amount: 18%)
+    }
+  }
+}
+
+.sector{
+  width: 100%;
+  overflow-x: auto;
+
+  .table-title{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  
+    button{
+      @include button-style();
+      padding: 4px 8px;
+    }
+  }
+
+  tbody{
+    tr{
+      border-bottom: solid 1px $separator;
+    }
+  }
+}

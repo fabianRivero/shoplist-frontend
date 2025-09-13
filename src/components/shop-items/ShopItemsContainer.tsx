@@ -8,6 +8,8 @@ import { ModalContext } from "../../shared/components/modal/context"
 import { useAxios } from "../../shared/hooks/useAxios"
 import { Modal } from "../../shared/components/modal/Modal"
 import { useNavigate } from "react-router-dom"
+import "./shop-items-container.scss"
+
 
 export const ShopItemsContainer = () => {
     const serviceCall = useCallback(() => shopItemsService.getItems(), [])
@@ -40,17 +42,19 @@ export const ShopItemsContainer = () => {
     if(error) return <p>Error: {error}</p>
     
     return(
-        <>  
+        <main className="shop-items-container">
             {state && state.items.size > 0 ?
             <ShopItemList items={Array.from(state.items, (([, value]) => value))} />
             :
-            <div>No hay productos</div>
+            <div className="not-found-message">No hay productos registrados</div>
             }
-            <button onClick={openModal}>Crear nuevo producto</button>
-            <button onClick={backToMenu}>Volver al menú principal</button>
+            <div className="buttons">
+                <button onClick={openModal} className="shop-item-button">Crear nuevo producto</button>
+                <button onClick={backToMenu} className="shop-item-button">Volver al menú principal</button>
+            </div>
             <Modal>
-                <ShopItemForm />
+                <ShopItemForm isModal/>
             </Modal>
-        </>
+        </main>
     )
 }
