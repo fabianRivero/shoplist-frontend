@@ -1,10 +1,10 @@
 import { useCallback, useContext } from "react";
 import { shopItem, ShopItemActionType } from "../models";
 import { ShopItemContext } from "../context/shopItem";
-import { useNavigate } from "react-router-dom";
 import { shopItemsService } from "../services/shopItemService";
 import { ShopItem } from "./ShopItem";
 import { useAxios } from "../../../shared/hooks/useAxios";
+import { ModalContext } from "../../../shared/components/modal/context";
 import  "./styles/shop-item-list.scss";
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 
 export const ShopItemList = ({ items }: Props) => {
     const { dispatch } = useContext(ShopItemContext);
-    const navigate = useNavigate();
+    const { setState: modalSetState } = useContext(ModalContext);
 
     const deleteItemServiceCall = useCallback((id: string) => shopItemsService.deleteItem(id), [])
 
@@ -33,7 +33,10 @@ export const ShopItemList = ({ items }: Props) => {
     }
 
     const handleEdit = (id: string) => {
-        navigate(`/edit-item/${id}`)
+        modalSetState({
+            open: true,
+            data: { id, mode: "edit", form: "shopItem" }
+        });
     }
 
     const getTodayDate = () => {
@@ -46,7 +49,10 @@ export const ShopItemList = ({ items }: Props) => {
 
     const newPurchase = (id: string) => {
         const date = getTodayDate();
-        navigate(`/add-purchase/${date}/${id}`)
+        modalSetState({
+            open: true,
+            data: { id, date, mode: "create", form: "purchase" }
+        });
     }
 
     return(

@@ -1,7 +1,6 @@
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { PurchaseContext } from "../context/ShopListContext";
 import { ModalContext } from "../../../shared/components/modal/context";
@@ -40,13 +39,14 @@ type Props = {
 
 export const PurchaseForm = ({ mode }: Props) => {
   const schema = mode === "create" ? createPurchaseSchema : updatePurchaseSchema;
-  const { date, id } = useParams()
   const itemState  = useContext(ShopItemContext)
   const { state, dispatch } = useContext(PurchaseContext)
-  const { setState: modalSetState } = useContext(ModalContext)
+  const { state: modalState, setState: modalSetState } = useContext(ModalContext);
   const [selectedItem, setSelectedItem] = useState<shopItem | Purchase | null>(null);
-  const navigate = useNavigate()
   const userState = useContext(AuthContext)
+
+  const id = modalState.data?.id;
+  const date = modalState.data?.date;
 
   const { register, handleSubmit, formState, reset, watch } = useForm<
   CreatePurchaseData | UpdatePurchaseData
@@ -120,8 +120,7 @@ export const PurchaseForm = ({ mode }: Props) => {
         dispatch({ type: PurchaseActionType.CREATE_PURCHASE, payload: result });
       }
 
-      modalSetState(false)
-      navigate("/item-list")
+      modalSetState({ open: false, data: undefined });
     } catch (error){
       if(error instanceof Error) alert(error.message || "Error en la operación")
     }
@@ -159,7 +158,7 @@ export const PurchaseForm = ({ mode }: Props) => {
     setSelectedItem(foundPurchase);
     
     reset({
-      date: date ?? "",
+      date,
       purchaseId: foundPurchase.purchaseId,
       productId: foundPurchase.productId,
       name: foundPurchase.name ?? "",
@@ -181,7 +180,7 @@ export const PurchaseForm = ({ mode }: Props) => {
       <h2>{mode === "edit" ? "Actualizar compra" : "Añadir compra"}</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         {selectedItem && (
-        <div>
+        <>
           <h3>
           {selectedItem.name}{" "}
       {showBrand(selectedItem.brand) && <span>({selectedItem.brand})</span>}
@@ -195,6 +194,7 @@ export const PurchaseForm = ({ mode }: Props) => {
         />
         <p>{selectedItem.unit}</p>
       </div>
+      
       <div>
         {mode === "create" ? (
           <p>
@@ -222,7 +222,7 @@ export const PurchaseForm = ({ mode }: Props) => {
             <p>Sector: {selectedItem.sector}</p>
           )}
       </div> 
-    </div>
+    </>
     )}
 
     <button type="submit">{mode === "edit" ? "Actualizar compra" : "Añadir compra"}</button>

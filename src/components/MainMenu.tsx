@@ -8,7 +8,7 @@ export const MainMenu = () => {
     const navigate = useNavigate();
 
     const addPurchase = () => {
-        navigate("/item-list")
+    navigate("/item-list");
     }
 
     const goToBudgets = () => {

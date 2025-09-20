@@ -1,9 +1,17 @@
 import { createContext } from "react";
 
+export type ModalData = {
+  id?: string;
+  date?: string;
+  mode: "create" | "edit";
+  form: "purchase" | "shopItem";
+};
+
+
 export const ModalContext = createContext<{
-    state: boolean;
-    setState: React.Dispatch<React.SetStateAction<boolean>>
+  state: { open: boolean; data?: ModalData };
+  setState: (value: { open: boolean; data?: ModalData }) => void;
 }>({
-    state: false,
-    setState: () => null
+    state: { open: false },
+    setState: () => {}
 })

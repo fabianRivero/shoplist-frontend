@@ -8,7 +8,7 @@ export interface Purchase extends Pick<shopItem,
 }
 
 export interface ShopList {
-    date: string | undefined;
+    date: string;
     userId: string;
     purchases: Purchase[];
 }

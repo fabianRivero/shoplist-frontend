@@ -1,7 +1,6 @@
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useContext, useEffect } from "react";
 import { ShopItemContext } from "../context/shopItem";
 import { shopItem, ShopItemActionType } from "../models";
@@ -10,9 +9,10 @@ import { ModalContext } from "../../../shared/components/modal/context";
 import { FormInput } from "../../../shared/components";
 import { AuthContext } from "../../../auth/context";
 import { useAxios } from "../../../shared/hooks/useAxios";
-import "./styles/shop-item-form.scss";
 import { FormSelect } from "../../../shared/components/FormSelect";
 import { capitalize } from "../../../shared/services";
+import "./styles/shop-item-form.scss";
+
 
 const shopItemSchema = z.object(
     {
@@ -28,25 +28,26 @@ const shopItemSchema = z.object(
 
 type ShopItemData = z.infer<typeof shopItemSchema>
 type ShopItemFormData = Omit<ShopItemData, "userId">
+
 type Props = {
   isModal?: boolean;
 };
 
 
 export const ShopItemForm = ({ isModal = false }: Props) => {
-    const { id } = useParams()
     const { register, handleSubmit, formState, reset } = useForm<ShopItemFormData>({
         resolver: zodResolver(shopItemSchema.omit({ userId: true }))
     })
     const { state, dispatch } = useContext(ShopItemContext)
-    const { setState: modalSetState } = useContext(ModalContext)
-    const navigate = useNavigate()    
+    const { state: modalState, setState: modalSetState } = useContext(ModalContext)
     const userState = useContext(AuthContext) 
     const getItemServiceCall = useCallback((id: string) => shopItemsService.getItem(id,), [])
 
     const { isLoading, error: getItemError } = useAxios<string, shopItem>({
         serviceCall: getItemServiceCall,
     })
+        
+    const id = modalState.data?.id;
 
     const selectOptions = [
         { value: "Alimentos", label: "Alimentos" },
@@ -74,11 +75,10 @@ export const ShopItemForm = ({ isModal = false }: Props) => {
             } else{
                 result = await shopItemsService.createItem(fullData);
                 dispatch({ type: ShopItemActionType.CREATE, payload: result });
-
             }
 
-             modalSetState(false)
-            navigate("/item-list")
+            modalSetState({open: false, data: undefined})
+
         } catch(error){
             if(error instanceof Error) alert(error.message || "Error en la operación")
         }

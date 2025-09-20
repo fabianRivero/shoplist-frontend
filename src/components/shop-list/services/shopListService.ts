@@ -62,7 +62,8 @@ class PurchaseService {
         const response = await apiFetch(`${this.BASE_URL}/filters?${params.toString()}`, {
             method: "GET",
         });
-        return await response.json();
+        const data = await response.json();
+        return data;
     }
 
     async getPurchases(): Promise<ShopList[]> {

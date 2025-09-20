@@ -12,7 +12,7 @@ export const Modal = ({ children }: Props) => {
     const { state, setState } = useContext(ModalContext)
 
 
-    const closeModal = () => { setState(false) }
+    const closeModal = () => { setState({open: false, data: undefined}) }
     const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
     }
@@ -20,20 +20,20 @@ export const Modal = ({ children }: Props) => {
     useEffect(() => {
         const handleEsc = (e: KeyboardEvent) => {
             if(e.key === "Escape"){
-                setState(false);
+                setState({open: false, data: undefined});
             }
         }
 
-        if(state){
+        if(state.open){
             document.addEventListener("keydown", handleEsc)
         }
 
         return () => {
             document.removeEventListener("keydown", handleEsc)
         }
-    }, [setState, state])
+    }, [setState, state.open])
 
-    if (!state) return null;
+    if (!state.open) return null;
 
     const modalRoot = document.getElementById("modal")
     if(!modalRoot) return null;

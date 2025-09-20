@@ -4,13 +4,11 @@
 
 .shop-item-list-container {
     @include box-style();
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 30px;
-    margin-top: 80px;
-
-
+    
     .shop-item-list{
         display: flex;
         flex-direction: column;
@@ -18,7 +16,7 @@
     }
 
     .buttons{
-        gap: 4px;
+        gap: 8px;
         .shop-item-button{
             padding: 4px 6px;
         }

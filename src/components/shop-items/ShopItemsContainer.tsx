@@ -9,14 +9,13 @@ import { useAxios } from "../../shared/hooks/useAxios"
 import { Modal } from "../../shared/components/modal/Modal"
 import { useNavigate } from "react-router-dom"
 import "./shop-items-container.scss"
-
+import { PurchaseForm } from "../shop-list/components/PurchaseForm"
 
 export const ShopItemsContainer = () => {
     const serviceCall = useCallback(() => shopItemsService.getItems(), [])
-    const { setState } = useContext(ModalContext)
+    const { setState, state: modalState } = useContext(ModalContext);
     const { state, dispatch } = useContext(ShopItemContext)
     const navigate = useNavigate();
-
 
     const { isLoading, data: items, error } = useAxios<void, shopItem[]>({
         serviceCall,
@@ -24,13 +23,15 @@ export const ShopItemsContainer = () => {
     })
 
     const openModal = () => {
-        setState(true)
+        setState({
+        open: true,
+        data: { mode: "create", form: "shopItem" },
+        });
+    };
 
-    }
-
-    const backToMenu = () => {
-        navigate("/main-menu")
-    }
+    const goBack = () => {
+        navigate(-1);
+    };
 
     useEffect(() => {
         if(items && items.length > 0){
@@ -43,18 +44,33 @@ export const ShopItemsContainer = () => {
     
     return(
         <main className="shop-items-container">
+            <div className="buttons">
+                <button onClick={openModal} className="shop-item-button">Crear nuevo producto</button>
+                <button 
+                    onClick={() => goBack()} 
+                    className="shop-item-button"
+                >
+                    Volver
+                </button>
+            </div>
+            
             {state && state.items.size > 0 ?
             <ShopItemList items={Array.from(state.items, (([, value]) => value))} />
             :
             <div className="not-found-message">No hay productos registrados</div>
             }
-            <div className="buttons">
-                <button onClick={openModal} className="shop-item-button">Crear nuevo producto</button>
-                <button onClick={backToMenu} className="shop-item-button">Volver al menú principal</button>
-            </div>
-            <Modal>
-                <ShopItemForm isModal/>
-            </Modal>
+
+      <Modal>
+
+        {modalState.data?.form === "shopItem" && <ShopItemForm isModal/>}
+        {modalState.data?.form === "purchase" && 
+        (modalState.data.mode === "create" ?
+            <PurchaseForm mode="create" /> :
+            <PurchaseForm mode="edit" />
+        )
+        
+       }
+      </Modal>
         </main>
     )
 }

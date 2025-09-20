@@ -7,6 +7,7 @@ import { PurchaseList } from "./components/PurchaseList";
 import { getPeriodPurchasesResponse } from "./models/shopListModel";
 import { motion, AnimatePresence } from "framer-motion";
 import "./shop-list-container.scss";
+import { normalizeDate } from "../../shared/adapters/dateAdapter";
 
 type Props = {
     period?: string;
@@ -30,14 +31,18 @@ export const ShopListContainer = ({period = "day", baseDate = localDate}: Props)
         trigger: true
     })
 
-    const purchaseArray = state ? Array.from(state.purchases.values()).flat() : [];
-    const visiblePurchases = purchaseArray.slice(0, visibleCount);
+
+    const purchasesForDate = state.purchases.get(normalizeDate(baseDate)) ?? [];
+    const visiblePurchases = purchasesForDate.slice(0, visibleCount);
 
     useEffect(() => {
-        if(register){
-            dispatch({ type: PurchaseActionType.NEW, payload: register.register.logs })
-        }
+        if (register){
+            if (register.register.logs.length > 0) {
+                dispatch({ type: PurchaseActionType.NEW, payload: register.register.logs[0] })
+            }
+        } 
     }, [register, dispatch])
+
 
     if(isLoading) return <p>Cargando productos...</p>
     if(error) return <p>Error: {error}</p>
@@ -45,9 +50,9 @@ export const ShopListContainer = ({period = "day", baseDate = localDate}: Props)
     return(
         <div className="purchase-list-container"> 
             
-            <h3 className="date">Fecha: {baseDate}</h3>
+            <h3 className="date">Fecha: {normalizeDate(baseDate)}</h3>
             
-            {purchaseArray.length > 0 ? (
+            {purchasesForDate.length > 0 ? (
                 <>
                     <div className="purchase-list-wrapper">
                         <AnimatePresence initial={false}>
@@ -65,7 +70,7 @@ export const ShopListContainer = ({period = "day", baseDate = localDate}: Props)
                         </AnimatePresence>
                     </div>
 
-                    {visibleCount < purchaseArray.length && (
+                    {visibleCount < purchasesForDate.length && (
                         <button onClick={() => setVisibleCount(prev => prev + 3)} className="show-button">
                             Mostrar más
                         </button>

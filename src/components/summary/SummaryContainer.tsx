@@ -6,23 +6,35 @@ import { summaryService } from "./services/summaryService";
 import { useAxios } from "../../shared/hooks/useAxios";
 import { SummaryActionType } from "./models/summaryState";
 import { PurchaseContext } from "../shop-list/context/ShopListContext";
-import "./summary-container.scss"
 import { capitalize, getMonth } from "../../shared/services";
+import "./summary-container.scss"
 
-export const SummaryContainer = () => {
+type Props = {
+    date?: string;
+    period?: string;
+    sector?: string
+}
+
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+const localDate = `${year}-${month}-${day}`;
+
+export const SummaryContainer = ({date = localDate, period = "month", sector}: Props) => {
 
   const summaryContext = useContext(SummaryContext);
   const { state: purchaseState } = useContext(PurchaseContext);
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  const localDate = `${year}-${month}-${day}`;
-  const serviceCall = useCallback(() => summaryService.getSummary(localDate, "month"), [localDate])
+  
+  const serviceCall = useCallback(() => summaryService.getSummary(date, period, sector), [date, period, sector])
   const { isLoading, data: summary, error, executeFetch } = useAxios<void, Summary>({
       serviceCall,
       trigger: true
   })
+
+  function getMonthNumber(date: string){
+    return date.slice(5, 7);
+  }  
 
   function getCurrentBudget(summary: Summary | null, currentMonth: number, currentYear: number) {
     if (!summary || !summary.budgets) return null;
@@ -33,7 +45,8 @@ export const SummaryContainer = () => {
     return budget;
   }
 
-  const currentBudget = getCurrentBudget(summary, Number(month), year);
+  const monthNumber = getMonthNumber(date)
+  const currentBudget = getCurrentBudget(summary, Number(monthNumber), year);
 
   useEffect(() => {
      if(summary){
@@ -55,7 +68,7 @@ export const SummaryContainer = () => {
         <h3 className="not-found-message">no hay resumen disponible</h3>
       ) : (
         <div className="summary">
-          <span className="month">{capitalize(getMonth({ num: Number(month) }))} - {year}</span>
+          <span className="month">{capitalize(getMonth({ num: Number(monthNumber) }))} - {year}</span>
           <h3>Gasto general: {summary?.totalSpent}$</h3>
 
           {summary?.totalSpent ? (

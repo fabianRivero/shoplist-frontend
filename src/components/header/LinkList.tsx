@@ -44,6 +44,11 @@ export const LinkList = ({ cls, isFromMenu = false, onLinkClick }: Props) =>{
         if(isFromMenu) onLinkClick?.();
     }
 
+    const goToPurchaseManager = async () => {
+        navigate("/purchase-manager")
+        if(isFromMenu) onLinkClick?.();
+    }
+
     useEffect(() => {
         if(!state.isAuthenticated) {
         dispatch({ type: AuthActionType.LOGOUT });
@@ -59,6 +64,7 @@ export const LinkList = ({ cls, isFromMenu = false, onLinkClick }: Props) =>{
             <button className="link-button" onClick={goToMenu}>Menú</button>
             <button className="link-button" onClick={goToItems}>Productos</button>
             <button className="link-button" onClick={goToBudgetPlanning}>Establecer Presupuestos</button>
+            <button className="link-button" onClick={goToPurchaseManager}>Planifiacar compras</button>
         </nav>
     )
 
