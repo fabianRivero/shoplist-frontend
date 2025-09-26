@@ -1,12 +1,12 @@
 import { useCallback, useContext } from "react";
 import { Purchase } from "../models/shopListModel";
 import { PurchaseContext } from "../context/ShopListContext";
-import { useNavigate } from "react-router-dom";
 import { purchaseService } from "../services/shopListService";
 import { useAxios } from "../../../shared/hooks/useAxios";
 import { PurchaseActionType } from "../models/purchaseListState";
 import { PurchaseItem } from "./PurchaseItem";
 import "./styles/purchase-list.scss"
+import { ModalContext } from "../../../shared/components/modal/context";
 
 interface Props {
     purchases: Purchase[],
@@ -15,7 +15,7 @@ interface Props {
 
 export const PurchaseList = ({ purchases, date }: Props) => {
     const { dispatch } = useContext(PurchaseContext);
-    const navigate = useNavigate();
+      const { setState: modalSetState } = useContext(ModalContext);
 
     const deletePurchaseServiceCall = useCallback((id: string | undefined) => purchaseService.deletePurchase(date, id), [date])
 
@@ -37,10 +37,13 @@ export const PurchaseList = ({ purchases, date }: Props) => {
         }
     }
 
-    const handleEdit = (id: string | undefined, date: string | Date) => {
-        if (!id || !date) return;
-        navigate(`/edit-purchase/${date}/${id}`);
-    };
+    const handleEdit = (id: string | undefined, date: string | undefined) => {
+        modalSetState({
+            open: true,
+            data: { id, date: date, mode: "edit", form: "purchase" }
+        });
+    }
+
 
   return (
     <>
@@ -51,7 +54,7 @@ export const PurchaseList = ({ purchases, date }: Props) => {
               <button onClick={() => handleDelete(purchase.purchaseId, date)} className="purchase-button">
                 Eliminar
               </button>
-              <button onClick={() => handleEdit(purchase.purchaseId, date)} className="purchase-button">
+              <button onClick={() => purchase.purchaseId && handleEdit(purchase.purchaseId, date)} className="purchase-button">
                 Editar
               </button>
             </div>

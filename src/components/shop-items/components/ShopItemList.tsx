@@ -6,6 +6,7 @@ import { ShopItem } from "./ShopItem";
 import { useAxios } from "../../../shared/hooks/useAxios";
 import { ModalContext } from "../../../shared/components/modal/context";
 import  "./styles/shop-item-list.scss";
+import { getMonthNumber } from "../../../shared/services/getMonthNumber";
 
 interface Props {
     items: shopItem[],
@@ -13,7 +14,7 @@ interface Props {
 
 export const ShopItemList = ({ items }: Props) => {
     const { dispatch } = useContext(ShopItemContext);
-    const { setState: modalSetState } = useContext(ModalContext);
+    const { state: modalState, setState: modalSetState } = useContext(ModalContext);
 
     const deleteItemServiceCall = useCallback((id: string) => shopItemsService.deleteItem(id), [])
 
@@ -47,13 +48,21 @@ export const ShopItemList = ({ items }: Props) => {
         return `${year}-${month}-${day}`;
     };
 
+    const usedDate = modalState.data?.date
+    const formattedDate = 
+    usedDate && usedDate?.length > 10 ?
+    usedDate && `${usedDate.slice(11, 15)}-${getMonthNumber(usedDate.slice(4, 7))}-${usedDate.slice(8, 10)}`
+    : usedDate;
+    
     const newPurchase = (id: string) => {
-        const date = getTodayDate();
+        const date = formattedDate ? formattedDate : getTodayDate();
+
         modalSetState({
             open: true,
             data: { id, date, mode: "create", form: "purchase" }
         });
     }
+
 
     return(
         <main className="shop-item-list-container">

@@ -111,16 +111,18 @@ export const PurchaseForm = ({ mode }: Props) => {
 
       if (mode === "edit") {
         if (!editedPurchase.date) throw new Error("Compra no registrada");
+
         // actualizar compra
         const response = await purchaseService.updatePurchase(editedPurchase);
         dispatch({ type: PurchaseActionType.UPDATE_PURCHASE, payload: response });
+
       } else {
         // crear compra
         result = await purchaseService.createPurchase(createdPurchase);
         dispatch({ type: PurchaseActionType.CREATE_PURCHASE, payload: result });
       }
 
-      modalSetState({ open: false, data: undefined });
+      modalSetState({ open: false, data: modalState.data });
     } catch (error){
       if(error instanceof Error) alert(error.message || "Error en la operación")
     }

@@ -8,6 +8,9 @@ import { getPeriodPurchasesResponse } from "./models/shopListModel";
 import { motion, AnimatePresence } from "framer-motion";
 import "./shop-list-container.scss";
 import { normalizeDate } from "../../shared/adapters/dateAdapter";
+import { Modal } from "../../shared/components/modal/Modal";
+import { PurchaseForm } from "./components/PurchaseForm";
+import { ModalContext } from "../../shared/components/modal/context";
 
 type Props = {
     period?: string;
@@ -23,6 +26,7 @@ const localDate = `${year}-${month}-${day}`;
 export const ShopListContainer = ({period = "day", baseDate = localDate}: Props) => {
     const { state, dispatch } = useContext(PurchaseContext)
     const [visibleCount, setVisibleCount] = useState(3);
+    const { state: modalState } = useContext(ModalContext);
 
     const serviceCall = useCallback(() => purchaseService.getPurchasesByCharacteristic(period, baseDate), [period, baseDate])
 
@@ -31,8 +35,10 @@ export const ShopListContainer = ({period = "day", baseDate = localDate}: Props)
         trigger: true
     })
 
+    const usedDate = baseDate.slice(0, 16) + "00:00:00" + baseDate.slice(24)
 
-    const purchasesForDate = state.purchases.get(normalizeDate(baseDate)) ?? [];
+    const purchasesForDate = state.purchases.get(normalizeDate(usedDate)) ?? [];
+    
     const visiblePurchases = purchasesForDate.slice(0, visibleCount);
 
     useEffect(() => {
@@ -48,6 +54,7 @@ export const ShopListContainer = ({period = "day", baseDate = localDate}: Props)
     if(error) return <p>Error: {error}</p>
     
     return(
+    <>
         <div className="purchase-list-container"> 
             
             <h3 className="date">Fecha: {normalizeDate(baseDate)}</h3>
@@ -64,7 +71,7 @@ export const ShopListContainer = ({period = "day", baseDate = localDate}: Props)
                                     exit={{ opacity: 0, height: 0 }}
                                     transition={{ duration: 0.3 }}
                                 >
-                                    <PurchaseList purchases={[purchase]} date={baseDate} />
+                                    <PurchaseList purchases={[purchase]} date={usedDate} />
                                 </motion.div>
                             ))}
                         </AnimatePresence>
@@ -84,7 +91,11 @@ export const ShopListContainer = ({period = "day", baseDate = localDate}: Props)
             ) : (
                 <h3 className="not-found-message">No hay compras registradas</h3>
             )}
-
         </div>
+        
+        <Modal>
+        {modalState.data?.form === "purchase" && <PurchaseForm mode="edit" />}
+        </Modal>
+    </>
     )
 }

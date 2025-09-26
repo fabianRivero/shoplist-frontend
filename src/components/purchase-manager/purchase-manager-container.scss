@@ -1,20 +1,41 @@
+@import "../../shared/styles/buttons";
+@import "../../shared/styles/box-style";
+
 .purchase-manager-container{
     padding-top: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 45px;
+    width: 450px;
 
     .calendar-container{
         display: flex;
         flex-direction: column;
         gap: 12px;
-        align-items: center;
     }
 
     .shopList-container{
         display: flex;
         flex-direction: column;
+        gap: 20px;
+        @include box-style();
+    
+        .shopList-container-title{
+            display: flex;
+            justify-content: space-between;
+
+            button{
+                @include button-style();
+                padding: 3px 6px;
+            }
+        }   
+    }
+
+    .summary-container{
+        @include box-style();
+        display: flex;
+        flex-direction: column;
         gap: 12px;
+        padding-bottom: 20px;
     }
 }

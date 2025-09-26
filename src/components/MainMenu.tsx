@@ -15,6 +15,10 @@ export const MainMenu = () => {
         navigate("/budget-planning")
     }
 
+    const goToPurchases = () => {
+        navigate("/purchase-manager")
+    }
+
     return(
         <main className="main-menu">
             <section className="menu-section">
@@ -30,7 +34,7 @@ export const MainMenu = () => {
                 <div className="summary-header">
                     <h2>Resumen de este mes</h2>
                     <div>
-                        <button>Gestionar compras</button>
+                        <button onClick={goToPurchases}>Gestionar compras</button>
                         <button onClick={goToBudgets}>Gestionar presupuestos</button>
                     </div>
                 </div>                   

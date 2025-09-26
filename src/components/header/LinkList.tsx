@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/context";
 import { AuthService } from "../../auth/services";
 import { AuthActionType } from "../../auth/models";
+import { ModalContext } from "../../shared/components/modal/context";
 
 interface Props {
     cls: string;
@@ -15,13 +16,15 @@ export const LinkList = ({ cls, isFromMenu = false, onLinkClick }: Props) =>{
 
     const navigate = useNavigate();
     const { state, dispatch } = useContext(AuthContext);
-    
+    const { setState: modalSetState } = useContext(ModalContext);
+
     const logout = async () => {
         try{
             const authService = new AuthService();
             await authService.logout();
             dispatch({ type: AuthActionType.LOGOUT });
             if(isFromMenu) onLinkClick?.();
+            modalSetState({ open: false , data: undefined})
         }catch (error){
             if(error instanceof Error){
                 alert(error.message || "Error al cerrar sesión");
@@ -32,21 +35,25 @@ export const LinkList = ({ cls, isFromMenu = false, onLinkClick }: Props) =>{
     const goToMenu = async () => {
         navigate("/main-menu")
         if(isFromMenu) onLinkClick?.();
+        modalSetState({ open: false , data: undefined})
     }
 
     const goToItems = async () => {
         navigate("/item-list")
         if(isFromMenu) onLinkClick?.();
+        modalSetState({ open: false , data: undefined})
     }
 
     const goToBudgetPlanning = async () => {
         navigate("/budget-planning")
         if(isFromMenu) onLinkClick?.();
+        modalSetState({ open: false , data: undefined})
     }
 
     const goToPurchaseManager = async () => {
         navigate("/purchase-manager")
         if(isFromMenu) onLinkClick?.();
+        modalSetState({ open: false , data: undefined})
     }
 
     useEffect(() => {

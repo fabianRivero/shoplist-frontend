@@ -7,11 +7,15 @@ export type ModalData = {
   form: "purchase" | "shopItem";
 };
 
+export type ModalState = {
+  open: boolean;
+  data?: ModalData;
+};
 
 export const ModalContext = createContext<{
-  state: { open: boolean; data?: ModalData };
-  setState: (value: { open: boolean; data?: ModalData }) => void;
+  state: ModalState;
+  setState: (value: ModalState) => void;
 }>({
     state: { open: false },
-    setState: () => {}
+    setState: () => undefined
 })

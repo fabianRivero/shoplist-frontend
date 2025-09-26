@@ -13,7 +13,7 @@ import { PurchaseForm } from "../shop-list/components/PurchaseForm"
 
 export const ShopItemsContainer = () => {
     const serviceCall = useCallback(() => shopItemsService.getItems(), [])
-    const { setState, state: modalState } = useContext(ModalContext);
+    const { state: modalState, setState } = useContext(ModalContext);
     const { state, dispatch } = useContext(ShopItemContext)
     const navigate = useNavigate();
 

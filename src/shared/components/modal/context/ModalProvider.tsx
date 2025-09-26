@@ -1,8 +1,15 @@
 import { ReactNode, useState } from "react";
-import { ModalContext } from "./" 
+import { ModalContext, ModalData } from "./" 
+
+interface ModalState {
+    open: boolean,
+    data?: ModalData,
+} 
 
 export const ModalProvider = ({ children }: { children:  ReactNode}) => {
-    const [state, setState] = useState<boolean>(false)
+    const [state, setState] = useState<ModalState>({
+    open: false,
+    });
 
     return(
         
