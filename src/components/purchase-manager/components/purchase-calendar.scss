@@ -1,0 +1,36 @@
+@import "../../../shared/styles/colors";
+@import "../../../shared/styles/fonts";
+
+.react-calendar{
+    width: 95%;
+    margin: 0px 15px;
+    border-radius: 15px;
+
+    .react-calendar__navigation{
+        .react-calendar__navigation__arrow{
+            color: $green;
+            font-size: $h2-size;
+        }
+    }
+
+    .react-calendar__tile {
+        border-radius: 10px; 
+        transition: all 0.2s;
+        height: 50px;
+    }
+
+    .react-calendar__tile--active{
+        background-color: lighten(red, 40%) !important;
+        &:hover{
+            background-color: lighten(red, 20%) !important;
+        }
+
+    }
+
+    .calendar-purchase{
+        font-size: 0.5rem;
+        color: $green-hover;
+        font-weight: 700;
+        line-height: 8px;
+    }
+}

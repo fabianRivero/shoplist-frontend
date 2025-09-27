@@ -65,7 +65,7 @@ export const PurchaseCalendar = ({ handleChange, date }: Props) => {
         if (view === "month") {
           const formatted = date.toISOString().split("T")[0];
           if (purchaseDates?.includes(formatted)) {
-            return <div style={{ color: "red", fontSize: "0.7em" }}>•</div>; 
+            return <div className="calendar-purchase">Compra registrada</div>; 
           }
         }
         return null;
