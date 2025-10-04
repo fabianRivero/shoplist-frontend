@@ -6,7 +6,7 @@ import { summaryService } from "./services/summaryService";
 import { useAxios } from "../../shared/hooks/useAxios";
 import { SummaryActionType } from "./models/summaryState";
 import { PurchaseContext } from "../shop-list/context/ShopListContext";
-import { capitalize, getMonth } from "../../shared/services";
+import { capitalize, getMonthName } from "../../shared/services";
 import "./summary-container.scss"
 
 type Props = {
@@ -68,7 +68,7 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
         <h3 className="not-found-message">no hay resumen disponible</h3>
       ) : (
         <div className="summary">
-          <span className="month">{capitalize(getMonth({ num: Number(monthNumber) }))} - {year}</span>
+          <span className="month">{capitalize(getMonthName({ num: Number(monthNumber) }))} - {year}</span>
           <h3>Gasto general: {summary?.totalSpent}$</h3>
 
           {summary?.totalSpent ? (

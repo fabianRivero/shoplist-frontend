@@ -1,0 +1,56 @@
+@import "../../shared/styles/box-style";
+@import "../../shared/styles/buttons";
+@import "../../shared/styles/colors";
+
+.analyzer-container{
+    padding: 20px;
+    padding-top: 80px;
+    display: flex;
+    flex-direction: column;
+
+    button{
+        @include button-style();
+        padding: 5px 10px;
+    }
+
+    .analyzer-container-header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        #period-select{
+            @include button-style();
+            padding: 5px 10px;
+
+            option{
+                color: white;
+                &:hover{
+                    color: white !important;
+                } 
+            }
+        }
+    }
+    
+    .content{
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        .analisis-section{
+            @include box-style();
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+
+            .items-list-header{
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .not-found-message{
+                padding: 20px;
+            }
+        }
+    }
+}

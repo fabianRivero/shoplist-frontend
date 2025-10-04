@@ -4,7 +4,7 @@ export type ModalData = {
   id?: string;
   date?: string;
   mode: "create" | "edit";
-  form: "purchase" | "shopItem";
+  form: "purchase" | "shopItem" | "analyzeItem";
 };
 
 export type ModalState = {

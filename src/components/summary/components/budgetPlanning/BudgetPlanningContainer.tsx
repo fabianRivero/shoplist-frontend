@@ -75,7 +75,7 @@ export function BudgetPlanningContainer() {
     isNewMonth = false
     ) => {
     setEditingBudget({ year, month, sector, defaultValue, isNewSector, isNewMonth });
-    setState(true);
+    setState({open: true});
     };
 
     useEffect(() => {

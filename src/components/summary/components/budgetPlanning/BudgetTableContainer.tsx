@@ -22,7 +22,7 @@ export function BudgetTableContainer() {
     const { state, dispatch } = useContext(SummaryContext);
     const [editingBudget, setEditingBudget] = useState<{
         year: number;
-        month: number;
+        month?: number;
         sector?: string;   
         amount?: number;   
     } | null>(null);
@@ -63,9 +63,9 @@ export function BudgetTableContainer() {
         executeDeleteSectorBudgetFetch({year, month, sector})
     }
 
-    const openModal = (year: number, month: number, sector?: string, amount?: number) => {
+    const openModal = (year: number, month?: number, sector?: string, amount?: number) => {
         setEditingBudget({ year, month, sector, amount });
-        setState(true);
+        setState({open: true});
     };
 
     useEffect(() => {

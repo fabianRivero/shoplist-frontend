@@ -14,13 +14,13 @@ export interface ShopList {
 }
 
 export interface logs {
-    logs: ShopList[]
+    logs: ShopList[],
 }
 
 export interface getPeriodPurchasesResponse {
     register: logs,
     period: string,
-    startDate?: string,
-    endDate?: string
+    startDate: string,
+    endDate: string
 }
 

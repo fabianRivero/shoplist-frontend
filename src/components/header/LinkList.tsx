@@ -56,6 +56,12 @@ export const LinkList = ({ cls, isFromMenu = false, onLinkClick }: Props) =>{
         modalSetState({ open: false , data: undefined})
     }
 
+    const goToAnalyzer = async () => {
+        navigate("/analyzer")
+        if(isFromMenu) onLinkClick?.();
+        modalSetState({ open: false , data: undefined})
+    }
+
     useEffect(() => {
         if(!state.isAuthenticated) {
         dispatch({ type: AuthActionType.LOGOUT });
@@ -72,6 +78,7 @@ export const LinkList = ({ cls, isFromMenu = false, onLinkClick }: Props) =>{
             <button className="link-button" onClick={goToItems}>Productos</button>
             <button className="link-button" onClick={goToBudgetPlanning}>Establecer Presupuestos</button>
             <button className="link-button" onClick={goToPurchaseManager}>Planifiacar compras</button>
+            <button className="link-button" onClick={goToAnalyzer}>Analisis de compras</button>
         </nav>
     )
 

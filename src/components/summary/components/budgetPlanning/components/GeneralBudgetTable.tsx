@@ -1,4 +1,4 @@
-import { getMonth } from "../../../../../shared/services";
+import { getMonthName } from "../../../../../shared/services";
 import { Budget } from "../../../models/summaryModel";
 import "./styles/table.scss";
 
@@ -33,7 +33,7 @@ export const GeneralBudgetTable = ({ year, budgets, onOpenModal, onDelete }: Gen
             const withBudget = budget?.general && budget.general > 0;
             return (
               <tr key={monthNum}>
-                <td className="month-cell">{getMonth({ num: monthNum })}</td>
+                <td className="month-cell">{getMonthName({ num: monthNum })}</td>
                 <td className={withBudget ? "" : "not-found-message"}>
                   {withBudget ? `${budget.general} USD` : "No establecido"}
                 </td>

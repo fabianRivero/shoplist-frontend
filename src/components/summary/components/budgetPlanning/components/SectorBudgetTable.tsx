@@ -1,5 +1,5 @@
 import React from "react";
-import { capitalize, getMonth } from "../../../../../shared/services";
+import { capitalize, getMonthName } from "../../../../../shared/services";
 import { Budget } from "../../../models/summaryModel";
 import "./styles/table.scss";
 
@@ -57,7 +57,7 @@ export const SectorBudgetTable = ({ year, budgets, onOpenModal, onDelete }: Sect
             <tr key={`${budget.month}-sector-${sector.sector}`}>
               {index === 0 && (
                 <td rowSpan={sectorCount + 1} className="month-cell">
-                  {getMonth({ num: budget.month })}
+                  {getMonthName({ num: budget.month })}
                 </td>
               )}
             <td>{capitalize(sector.sector)}</td>
