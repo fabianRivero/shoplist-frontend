@@ -1,3 +1,37 @@
+@import "../../../../shared/styles/buttons";
+
 .purchase-form-container {
-    
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+
+    .purchase-form{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        button{
+            @include button-style();
+        }
+    }
+
+    .purchase-quantity{
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+    }
+
+    .stats{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .price{
+            display: flex;
+            gap: 5px;
+        }
+    }
+
+
 }

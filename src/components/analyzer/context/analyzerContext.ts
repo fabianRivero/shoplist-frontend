@@ -2,7 +2,8 @@ import React, { createContext } from "react";
 import { AnalyzerAction, AnalyzerState } from "../models/AnalizerState";
 
 const initialState: AnalyzerState = {
-    items: []
+    items: [],
+    period: "month"
 }
 
 export const AnalyzerContext =createContext<{

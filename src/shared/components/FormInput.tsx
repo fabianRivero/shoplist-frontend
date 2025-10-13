@@ -13,7 +13,7 @@ type Props = {
 export const FormInput = ({ label, register, error, type= "text" }: Props) => (
     <div className="form-input">
         <label>{label}</label>
-        <input 
+        <input
         type={type} 
         step={type==="number" ? "any" : undefined}
         inputMode={type === "number" ? "decimal" : undefined}

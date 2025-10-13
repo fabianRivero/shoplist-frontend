@@ -11,7 +11,6 @@ export const PurchaseManagerContainer = () => {
   const [date, setDate] = useState<Date | null>(new Date());
   const {setState} = useContext(ModalContext)
   const navigate = useNavigate();
-
   const formattedDate = String(date).slice(0, 16) + "00:00:00" + String(date).slice(24)
 
   const usedDate = new Date(formattedDate) 
@@ -28,7 +27,7 @@ export const PurchaseManagerContainer = () => {
 
   const goToList = (date: string) => {
     if (!date) return;
-    setState({open: false, data: {date: date, mode: "edit", form: "purchase"}})
+    setState({open: false, data: {date: date, mode: "edit", content: "purchase"}})
     navigate("/item-list");
 
   }
@@ -51,7 +50,7 @@ export const PurchaseManagerContainer = () => {
 
       <section className="summary-container">
         <h2>Resumen de mes</h2>
-        <SummaryContainer />
+        <SummaryContainer date={formattedDate}/>
       </section>
     </div>
   );

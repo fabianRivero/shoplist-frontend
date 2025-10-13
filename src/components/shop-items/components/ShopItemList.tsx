@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { shopItem, ShopItemActionType } from "../models";
 import { ShopItemContext } from "../context/shopItem";
 import { shopItemsService } from "../services/shopItemService";
@@ -15,6 +15,7 @@ interface Props {
 export const ShopItemList = ({ items }: Props) => {
     const { dispatch } = useContext(ShopItemContext);
     const { state: modalState, setState: modalSetState } = useContext(ModalContext);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const deleteItemServiceCall = useCallback((id: string) => shopItemsService.deleteItem(id), [])
 
@@ -36,7 +37,7 @@ export const ShopItemList = ({ items }: Props) => {
     const handleEdit = (id: string) => {
         modalSetState({
             open: true,
-            data: { id, mode: "edit", form: "shopItem" }
+            data: { id, mode: "edit", content: "shopItem" }
         });
     }
 
@@ -59,26 +60,71 @@ export const ShopItemList = ({ items }: Props) => {
 
         modalSetState({
             open: true,
-            data: { id, date, mode: "create", form: "purchase" }
+            data: { id, date, mode: "create", content: "purchase" }
         });
     }
 
+    const filteredItems = useMemo(() => {
+      const term = searchTerm.toLowerCase().trim();
+      if (!term) return items;
+      return items.filter((item) => item.name.toLowerCase().includes(term));
+    }, [items, searchTerm]);
 
-    return(
-        <main className="shop-item-list-container">
-            <h1>Lista de productos</h1>
-            <ul className="shop-item-list">
-                {
-                items.map((item) => (
-                    <ShopItem key={item.id} shopItem={item}>
-                        <div className="buttons">
-                            <button className="shop-item-button" onClick={() => handleDelete(item.id)}>Eliminar</button>
-                            <button className="shop-item-button" onClick={() => handleEdit(item.id)}>Editar</button>
-                            <button className="shop-item-button" onClick={() => newPurchase(item.id)}>Agregar compra</button>
-                        </div>
-                    </ShopItem>
-                ))
-            }</ul>
-        </main>
-    )
+    const groupedItems = useMemo(() => {
+        const groups: Record<string, shopItem[]> = {};
+
+        for (const item of filteredItems) {
+            const firstLetter = item.name[0].toUpperCase();
+            if (!groups[firstLetter]) {
+                groups[firstLetter] = [];
+            }
+            groups[firstLetter].push(item);
+            }
+
+            const sortedEntries = Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+            return sortedEntries;
+    }, [filteredItems]);
+
+
+  return (
+    <main className="shop-item-list-container">
+      <h1>Lista de productos</h1>
+      <input
+        type="text"
+        placeholder="Buscar producto..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="shop-item-search"
+      />
+      {groupedItems.length === 0 ? (
+        <p className="not-found-message">No se encontraron productos.</p>
+      ) : (
+        <ul className="shop-item-list">
+          {groupedItems.map(([letter, group]) => (
+            <li key={letter} className="shop-item-group">
+              <h2 className="shop-item-letter">{letter}</h2>
+              <ul className="shop-item-list">
+                {group.map((item) => (
+                  <ShopItem key={item.id} shopItem={item}>
+                    <div className="buttons">
+                      <button className="shop-item-button" onClick={() => handleDelete(item.id)}>
+                        Eliminar
+                      </button>
+                      <button className="shop-item-button" onClick={() => handleEdit(item.id)}>
+                        Editar
+                      </button>
+                      <button className="shop-item-button" onClick={() => newPurchase(item.id)}>
+                        Agregar compra
+                      </button>
+                    </div>
+                  </ShopItem>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      )}
+
+    </main>
+  );
 }

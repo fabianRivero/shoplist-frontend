@@ -1,0 +1,21 @@
+@import "../../../../shared/styles/buttons";
+
+.month-form-container{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    padding-right: 20px;
+
+    .month-form{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .button{
+            @include button-style();
+            padding: 5px 10px;
+        }
+    }
+}
+

@@ -12,6 +12,7 @@ import { shopItem } from "../../shop-items/models";
 import { Purchase } from "../models/shopListModel";
 import { AuthContext } from "../../../auth/context";
 import "./styles/purchase-form.scss";
+import { capitalize } from "../../../shared/services";
 
 const createPurchaseSchema = z.object({
   date: z.string(),
@@ -180,51 +181,51 @@ export const PurchaseForm = ({ mode }: Props) => {
   return(
     <div className="purchase-form-container">
       <h2>{mode === "edit" ? "Actualizar compra" : "Añadir compra"}</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form className="purchase-form" onSubmit={handleSubmit(onSubmit)}>
         {selectedItem && (
         <>
           <h3>
-          {selectedItem.name}{" "}
-      {showBrand(selectedItem.brand) && <span>({selectedItem.brand})</span>}
-    </h3>
-      <div>
-        <FormInput
-          label="Cantidad comprada:"
-          register={register("purchaseQuantity", { valueAsNumber: true })}
-          type="number"
-          error={formState.errors.purchaseQuantity?.message}
-        />
-        <p>{selectedItem.unit}</p>
-      </div>
-      
-      <div>
-        {mode === "create" ? (
-          <p>
-            Precio por {selectedItem.unit}: 
-            <strong>{selectedItem.price.toFixed(2)}</strong> {selectedItem.currency}
-          </p>
-          ) : (
-          <div> 
+          {capitalize(selectedItem.name)}{" "}
+          {showBrand(selectedItem.brand) && <span>({selectedItem.brand})</span>}
+          </h3>
+          <div className="purchase-quantity">
             <FormInput
-              label={`Precio por ${selectedItem.unit}:`}
-              register={register("price", { valueAsNumber: true })}
+              label="Cantidad comprada:"
+              register={register("purchaseQuantity", { valueAsNumber: true })}
               type="number"
-              error={formState.errors.price?.message}
-            /> {selectedItem.currency}
+              error={formState.errors.purchaseQuantity?.message}
+            />
+            <p>{selectedItem.unit}</p>
           </div>
-        )}
+      
+          <div className="stats">
+            {mode === "create" ? (
+              <p className="price">
+                Precio por {selectedItem.unit}: 
+                <strong>{selectedItem.price.toFixed(2)}</strong> {selectedItem.currency}
+              </p>
+              ) : (
+              <div> 
+                <FormInput
+                  label={`Precio por ${selectedItem.unit}:`}
+                  register={register("price", { valueAsNumber: true })}
+                  type="number"
+                  error={formState.errors.price?.message}
+                /> {selectedItem.currency}
+              </div>
+            )}
 
-        <p>
-          Cantidad comprada: <strong>{purchaseQuantity}</strong> {selectedItem.unit}
-        </p>
-         <p>
-            Costo total: <strong>{totalCost.toFixed(2)}</strong> {selectedItem.currency}
-          </p>
-          {selectedItem.sector && (
-            <p>Sector: {selectedItem.sector}</p>
-          )}
-      </div> 
-    </>
+            <p>
+              Cantidad comprada: <strong>{purchaseQuantity}</strong> {selectedItem.unit}
+            </p>
+            <p>
+                Costo total: <strong>{totalCost.toFixed(2)}</strong> {selectedItem.currency}
+              </p>
+              {selectedItem.sector && (
+                <p>Sector: {selectedItem.sector}</p>
+              )}
+          </div> 
+        </>
     )}
 
     <button type="submit">{mode === "edit" ? "Actualizar compra" : "Añadir compra"}</button>

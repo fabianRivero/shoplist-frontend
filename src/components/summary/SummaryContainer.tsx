@@ -33,7 +33,21 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
   })
 
   function getMonthNumber(date: string){
-    return date.slice(5, 7);
+    if (date === localDate){
+      return date.slice(5, 7);
+    } else{
+      const monthName = date.slice(4, 7);
+
+      const months = Array.from({ length: 12 }, (_, i) =>
+        new Date(2000, i, 1)
+          .toLocaleString('en-EN', { month: 'short' })
+          .slice(0, 3)
+          .toLowerCase()
+      );
+
+      const index = months.indexOf(monthName.toLowerCase());
+      return index !== -1 ? index + 1 : null;
+    }
   }  
 
   function getCurrentBudget(summary: Summary | null, currentMonth: number, currentYear: number) {
@@ -62,13 +76,21 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
   if(isLoading) return <p>Cargando productos...</p>
   if(error) return <p>Error: {error}</p>
 
+  const calendarYear = () => {
+    if (date === localDate){
+      return year
+    } else{
+      return date.slice(11, 15)
+    }
+  }
+  
   return (
     <>
       {summary === null && currentBudget === null ? (
         <h3 className="not-found-message">no hay resumen disponible</h3>
       ) : (
         <div className="summary">
-          <span className="month">{capitalize(getMonthName({ num: Number(monthNumber) }))} - {year}</span>
+          <span className="month">{capitalize(getMonthName({ num: Number(monthNumber) }))} - {calendarYear()}</span>
           <h3>Gasto general: {summary?.totalSpent}$</h3>
 
           {summary?.totalSpent ? (

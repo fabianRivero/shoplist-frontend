@@ -1,0 +1,34 @@
+@import "../../../../shared/styles/colors";
+@import "../../../../shared/styles/fonts";
+
+.details-table{
+    border: 0.1px solid $separator;
+    border-collapse: collapse;
+    background-color: $box-background;
+
+    thead{
+        background-color: $green;
+
+        th{
+            font-size: $h4-size;
+            padding: 8px;
+            color: $box-background;
+        }
+    }
+
+    tbody{
+        & tr:nth-child(even){
+        background-color: lighten($separator, $amount: 18%)
+        }
+
+        th{
+           font-size: $h4-size;
+           color: $green-hover;
+           padding: 5px;
+        }
+
+        td{
+            text-align: center;
+        }
+    }
+}

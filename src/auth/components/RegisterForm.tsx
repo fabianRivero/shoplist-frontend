@@ -4,6 +4,7 @@ import z from "zod";
 import { AuthService } from "../services/AuthService";
 import { FormInput } from "../../shared/components";
 import { useForm } from "react-hook-form";
+import "./styles/auth-form.scss";
 
 const registerSchema = z.object({
     email: z.string().email("email inválido"),
@@ -37,15 +38,15 @@ export const RegisterForm = () => {
     }
 
     return (
-        <div className="container">
+        <div className="auth-container">
             <h2>Regístrate</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="form">
+            <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
                 <FormInput label="Email" register={register("email")} error={formState.errors.email?.message} />
                 <FormInput label="Username" register={register("username")} error={formState.errors.username?.message} />
                 <FormInput label="Password" register={register("password")} error={formState.errors.password?.message} type="password" />
                 <FormInput label="Confirm Password" register={register("confirmPassword")} error={formState.errors.confirmPassword?.message} type="password" />
                 <button type="submit">Registrarse</button>
-                <p>¿Ya tienes una cuenta? <Link to={"/"}>Inicia sesión</Link></p>
+                <p>¿Ya tienes una cuenta? <Link to={"/"}><span className="change">Inicia sesión</span></Link></p>
             </form>
         </div>
     );

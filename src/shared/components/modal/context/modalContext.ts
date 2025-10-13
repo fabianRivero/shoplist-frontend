@@ -1,10 +1,12 @@
 import { createContext } from "react";
+import { register } from "../../../../components/analyzer/models/analyzerModel";
 
 export type ModalData = {
   id?: string;
   date?: string;
-  mode: "create" | "edit";
-  form: "purchase" | "shopItem" | "analyzeItem";
+  dataToUse?: register;
+  mode: "create" | "edit" | "view";
+  content: "purchase" | "shopItem" | "analyzeItem" | "itemDetails";
 };
 
 export type ModalState = {

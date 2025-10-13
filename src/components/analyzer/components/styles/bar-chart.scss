@@ -1,0 +1,13 @@
+@import "../../../../shared/styles/buttons";
+
+#sector-select {
+    @include button-style();
+    padding: 5px 10px;
+
+    option{
+        color: white;
+        &:hover{
+            color: white !important;
+        } 
+    }  
+}

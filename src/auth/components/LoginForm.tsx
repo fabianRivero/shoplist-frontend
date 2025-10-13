@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthService } from "../services/AuthService";
 import { AuthActionType } from "../models";
 import { FormInput } from "../../shared/components";
+import "./styles/auth-form.scss";
 
 const loginSchema = z.object({
     email: z.string().email("email inválido"),
@@ -39,15 +40,15 @@ export const LoginForm = () => {
     }
 
     return(
-        <div className="container">
+        <div className="auth-container">
             <h2>Iniciar Sesión</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="form">
+            <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
                 <FormInput label="Email" register={register("email")} error = {formState.errors.email?.message} />
                 <FormInput label="Password" register={register("password")} error = {formState.errors.password?.message} type="password" />
                 <button type="submit">Iniciar Sesión</button>
             </form>
 
-            <p>¿No tienes cuenta? <Link to="/register">Regístrate</Link></p>
+            <p>¿No tienes cuenta? <Link to="/register"><span className="change">Regístrate</span></Link></p>
         </div>
     )
 }

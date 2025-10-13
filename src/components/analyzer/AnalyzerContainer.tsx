@@ -1,38 +1,41 @@
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { AnalyzerContext } from "./context/analyzerContext"
 import { AnalyzerList } from "./components/AnalyzerList"
 import { AnalyzerActionType, AnalyzerState } from "./models/AnalizerState"
 import { Modal } from "../../shared/components/modal/Modal"
 import { ModalContext } from "../../shared/components/modal/context"
 import { AddItemForm } from "./components/AddItemForm"
+import { ComparisonTable } from "./components/ComparisonTable"
+import { BarChart } from "./components/BarChart"
+import { ItemDetails } from "./components/ItemDetails"
+import { register } from "./models/analyzerModel"
 import "./analyzer-container.scss"
-import { ComparisonTable } from "./components/Comparison-table"
 
 const initialState: AnalyzerState = {
-    items: []
+    items: [],
+    period: "month"
 }
 
 export const AnalyzerContainer = () => {
     const { state, dispatch } = useContext(AnalyzerContext)
-    const [type, setType] = useState<string>("month")
     const { state: modalState, setState: modalSetState } = useContext(ModalContext) 
 
-    function clearAllItems() {
-        dispatch({
-            type: AnalyzerActionType.CLEAR_ALL,
-            payload: initialState
-        })  
-    }
+    function changeAnalyzerPeriod(value: string) {
+    dispatch({
+        type: AnalyzerActionType.CLEAR_ALL,
+        payload: initialState
+    })
 
-    function changeAnalyzerPeriod(type: string) {
-        clearAllItems()
-        setType(type)
+    dispatch({
+        type: AnalyzerActionType.CHANGE_PERIOD,
+        payload: value
+    })
     }
 
     const openModal = () => {
         modalSetState({
         open: true,
-        data: { mode: "create", form: "analyzeItem" },
+        data: { mode: "create", content: "analyzeItem" },
         });
     };
 
@@ -44,7 +47,7 @@ export const AnalyzerContainer = () => {
                         <select 
                             name="period" 
                             id="period-select" 
-                            value={type} 
+                            value={state.period} 
                             onChange={(e) => changeAnalyzerPeriod(e.target.value)}>
                                 <option value="month">Mes</option>
                                 <option value="year">Año</option>
@@ -58,23 +61,30 @@ export const AnalyzerContainer = () => {
                     <div className="items-list-header">
                         <h3>Items seleccionados</h3>
                         <button onClick={() => openModal()}>
-                            Agregar {`${type === "month" ? "mes" : "año"}`}
+                            Agregar {`${state.period === "month" ? "mes" : "año"}`}
                         </button>
                     </div>
                     {state && state.items.length > 0 ?
-                        
-                        <AnalyzerList items={state.items}/>                        
-                        
+                        <AnalyzerList />                        
                     :
                         <p className="not-found-message">No hay items seleccionados</p>
                     }
                     </div>
-                
-                <ComparisonTable />
+
+                    {state && state.items.length > 0 && 
+                        <>
+                            <ComparisonTable />
+                            <BarChart />
+                        </>
+                    }
+
+                    
                 </div>
 
             <Modal>
-            {modalState.data?.form === "analyzeItem" && <AddItemForm period={type}/>}
+                {modalState.data?.content === "analyzeItem" && <AddItemForm />}
+                {modalState.data?.content === "itemDetails" && modalState.data?.dataToUse && 
+                <ItemDetails item={modalState.data.dataToUse as register}/>}
             </Modal>
         </main>
     )

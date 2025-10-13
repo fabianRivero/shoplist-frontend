@@ -3,7 +3,7 @@ import { AnalyzerContext } from "../context/analyzerContext"
 import { register } from "../models/analyzerModel"
 import { getMonthName } from "../../../shared/services"
 import "./styles/comparison-table.scss"
-   
+
 export const ComparisonTable = () => {
     const { state } = useContext(AnalyzerContext)
 
@@ -25,7 +25,7 @@ export const ComparisonTable = () => {
 
         const year = data.slice(0, 4)
 
-        const date = `${month.slice(0, 3)}/${year}`
+        const date = state.period === "month" ? `${month.slice(0, 3)}/${year}` : year;
 
         return date
     }
@@ -65,9 +65,7 @@ export const ComparisonTable = () => {
                         <th>Sector</th>
                         {
                         itemDates.map((date) => (
-                                <>
-                                    <th key={date} scope="col">{formattedDate(String(date))}</th>
-                                </>
+                               <th key={date} scope="col">{formattedDate(String(date))}</th>
                             ))
                         }
                     </tr>
@@ -78,7 +76,6 @@ export const ComparisonTable = () => {
                         sectors.map((sector) => (
                             <tr key={sector}>
                                 <th scope="row" key={sector}>{sector}</th>
-                                <>
                                 {
                                     state.items.map((item) => {
                                         const total = getSectorValue(sector, item)
@@ -91,7 +88,6 @@ export const ComparisonTable = () => {
                                         
                                     })
                                 }
-                                </>
                             </tr>
                         ))
                     }

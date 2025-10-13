@@ -8,8 +8,8 @@ class SummaryService {
         const response = await apiFetch(`${this.BASE_URL}/summary?date=${date}&period=${period}&sector=${sector}`, {
             method: "GET",
         })
-
         return await response.json();
+
     }
 
     async setGeneralBudget(year: number | string, month: number | string, budget: number): Promise<Budget> {

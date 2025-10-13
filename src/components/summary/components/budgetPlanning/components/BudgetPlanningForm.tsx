@@ -75,7 +75,7 @@ const budgetPlanningFormSchema = z.object(
             dispatch({ type: SummaryActionType.SET_GENERAL_BUDGET, payload: result });
             }
 
-            modalSetState(false);
+            modalSetState({open: false});
         } catch (error) {
             if (error instanceof Error) alert(error.message || "Error en la operación");
         }

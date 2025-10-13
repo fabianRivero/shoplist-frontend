@@ -94,7 +94,7 @@ export const ShopListContainer = ({period = "day", baseDate = localDate}: Props)
         </div>
         
         <Modal>
-        {modalState.data?.form === "purchase" && <PurchaseForm mode="edit" />}
+        {modalState.data?.content === "purchase" && <PurchaseForm mode="edit" />}
         </Modal>
     </>
     )

@@ -25,7 +25,7 @@ export const ShopItemsContainer = () => {
     const openModal = () => {
         setState({
         open: true,
-        data: { mode: "create", form: "shopItem" },
+        data: { mode: "create", content: "shopItem" },
         });
     };
 
@@ -41,6 +41,9 @@ export const ShopItemsContainer = () => {
 
     if(isLoading) return <p>Cargando productos...</p>
     if(error) return <p>Error: {error}</p>
+
+    const itemsArray = Array.from(state.items, (([, value]) => value))
+    const sortedArray = itemsArray.sort((a, b) => a.name.localeCompare(b.name, "es", { sensitivity: "base" }))
     
     return(
         <main className="shop-items-container">
@@ -55,15 +58,15 @@ export const ShopItemsContainer = () => {
             </div>
             
             {state && state.items.size > 0 ?
-            <ShopItemList items={Array.from(state.items, (([, value]) => value))} />
+            <ShopItemList items={sortedArray} />
             :
             <div className="not-found-message">No hay productos registrados</div>
             }
 
       <Modal>
 
-        {modalState.data?.form === "shopItem" && <ShopItemForm isModal/>}
-        {modalState.data?.form === "purchase" && 
+        {modalState.data?.content === "shopItem" && <ShopItemForm isModal/>}
+        {modalState.data?.content === "purchase" && 
         (modalState.data.mode === "create" ?
             <PurchaseForm mode="create" /> :
             <PurchaseForm mode="edit" />

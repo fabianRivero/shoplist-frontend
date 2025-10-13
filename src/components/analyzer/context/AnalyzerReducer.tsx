@@ -3,7 +3,8 @@ import { AnalyzerAction, AnalyzerActionType, AnalyzerState } from "../models/Ana
 import { AnalyzerContext } from "./analyzerContext";
 
 const initialState: AnalyzerState = {
-    items: []
+    items: [],
+    period: "month"
 }
 
 const AnalyzerReducer = (state: AnalyzerState, action: AnalyzerAction): AnalyzerState => {
@@ -25,6 +26,13 @@ const AnalyzerReducer = (state: AnalyzerState, action: AnalyzerAction): Analyzer
 
         case AnalyzerActionType.CLEAR_ALL: {
             return initialState;
+        }
+
+        case AnalyzerActionType.CHANGE_PERIOD: {
+            return {
+                ...initialState,
+                period: action.payload
+            };
         }
 
         default:

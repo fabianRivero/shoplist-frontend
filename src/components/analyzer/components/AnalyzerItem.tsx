@@ -5,17 +5,18 @@ import "./styles/analyzer-item.scss"
 
 interface Props {
     item: register;
+    period: string,
     children: React.ReactNode;
 }
 
-export const AnalyzerItem = ({ item, children }: Props) => {
+export const AnalyzerItem = ({ item, period, children }: Props) => {
 
     const formattedDate = () => {
         const month = getMonthName({num: Number(item.register.startDate.slice(5, 7))})
 
         const year = item.register.startDate.slice(0, 4)
 
-        const date = `${month} del ${year}`
+        const date = period === "month" ? `${month.slice(0, 3)}/${year}` : year;
 
         return date
     }
