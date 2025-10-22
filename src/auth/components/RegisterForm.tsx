@@ -5,6 +5,7 @@ import { AuthService } from "../services/AuthService";
 import { FormInput } from "../../shared/components";
 import { useForm } from "react-hook-form";
 import "./styles/auth-form.scss";
+import { useState } from "react";
 
 const registerSchema = z.object({
     email: z.string().email("email inválido"),
@@ -22,18 +23,23 @@ export const RegisterForm = () => {
     const { register, handleSubmit, formState } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema)
     })
-
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const onSubmit = async(data: RegisterFormData) => {
         try{
+            setLoading(true)
             const authService = new AuthService();
             await authService.register(data.email, data.password, data.username);
             alert("Registro Existoso");
             navigate("/");
+            setLoading(false)
         } catch (error) {
             console.error("Error durante el registro:", error);
             alert("Error durante el registro");
+            setLoading(false)
+        } finally{
+            setLoading(false)
         }
     }
 
@@ -45,7 +51,9 @@ export const RegisterForm = () => {
                 <FormInput label="Nombre de usuario" register={register("username")} error={formState.errors.username?.message} />
                 <FormInput label="Contraseña" register={register("password")} error={formState.errors.password?.message} type="password" />
                 <FormInput label="Confirmar contraseña" register={register("confirmPassword")} error={formState.errors.confirmPassword?.message} type="password" />
-                <button type="submit">Registrarse</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? "Registrando..." : "Registrarse"}
+                </button>
             </form>
             <p>¿Ya tienes una cuenta? <Link to={"/"}><span className="change">Inicia sesión</span></Link></p>
         </div>
