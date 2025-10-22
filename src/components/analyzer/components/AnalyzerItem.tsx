@@ -26,7 +26,7 @@ export const AnalyzerItem = ({ item, period, children }: Props) => {
     return (
         <li className="analyzer-item">
             <div>{date}</div>
-            {children}
+            <div>{children}</div>
         </li>
     )
 }

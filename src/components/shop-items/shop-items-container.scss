@@ -1,21 +1,69 @@
 @import "../../shared/styles/buttons";
-
+@import "../../shared/styles/responsive-breakpoints";
 .shop-items-container{
     display: flex;
     flex-direction: column;
-    gap: 30px;
     align-items: center;
-    margin-bottom: 20px;
-    padding-top: 80px;
-    
+    padding-top: 70px;
+    background-color: $background;
+    box-sizing: border-box;
+    height: 100vh;
+    overflow: scroll;
+
     .buttons{
         display: flex;
         justify-content: center;
         gap: 10px;
     }
 
+    .products{
+        width: 100%;
+        padding: 20px;
+    }
+
     .shop-item-button{
         @include button-style;
         padding: 7px 10px;
+    }
+
+    @include respond-to("xs"){
+
+        & > .buttons{
+            gap: 20px;
+        }   
+    }
+
+    @include respond-to("sm"){
+        padding-top: 80px;
+
+        & > .buttons{
+            gap: 30px;
+        }  
+
+        .products{
+            padding: 20px 70px;
+        }
+    }
+
+    @include respond-to("md"){
+        padding-top: 75px;
+        & > .buttons{
+            gap: 40px;
+        }  
+        .products{
+            padding: 20px 100px;
+        }
+    }
+
+    @include respond-to("lg"){
+        .products{
+            padding: 20px 200px;
+        }
+    }
+
+    @include respond-to("xl"){
+        .products{
+            padding: 30px 300px;
+        }
     }
 }

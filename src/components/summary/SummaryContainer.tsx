@@ -6,7 +6,7 @@ import { summaryService } from "./services/summaryService";
 import { useAxios } from "../../shared/hooks/useAxios";
 import { SummaryActionType } from "./models/summaryState";
 import { PurchaseContext } from "../shop-list/context/ShopListContext";
-import { capitalize, getMonthName } from "../../shared/services";
+import { capitalize, getMonthName, TokenStorage } from "../../shared/services";
 import "./summary-container.scss"
 
 type Props = {
@@ -25,6 +25,10 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
 
   const summaryContext = useContext(SummaryContext);
   const { state: purchaseState } = useContext(PurchaseContext);
+
+  const usertoken = TokenStorage.getToken();  
+  const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+
   
   const serviceCall = useCallback(() => summaryService.getSummary(date, period, sector), [date, period, sector])
   const { isLoading, data: summary, error, executeFetch } = useAxios<void, Summary>({
@@ -91,7 +95,7 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
       ) : (
         <div className="summary">
           <span className="month">{capitalize(getMonthName({ num: Number(monthNumber) }))} - {calendarYear()}</span>
-          <h3>Gasto general: {summary?.totalSpent}$</h3>
+          <h3>Gasto general: {summary?.totalSpent} {userInfo?.currency}</h3>
 
           {summary?.totalSpent ? (
           <>
@@ -115,7 +119,7 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
                     {monthBudget.general === 0 ? (
                       <div></div>
                     ) : (
-                    <h3>Presupuesto mensual restante: {monthBudget.general - summary.totalSpent}$</h3>
+                    <h3>Presupuesto mensual restante: {monthBudget.general - summary.totalSpent} {userInfo?.currency}</h3>
                     )}
                     {monthBudget.sectors && monthBudget.sectors.length > 0 ? (
                     <div className="by-sector">

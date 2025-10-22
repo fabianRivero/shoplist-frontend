@@ -1,7 +1,7 @@
 @import "../../../../shared/styles/colors";
 @import "../../../../shared/styles/box-style";
 @import "../../../../shared/styles/fonts";
-
+@import "../../../../shared/styles/responsive-breakpoints";
 
 .shop-item-list-container {
     @include box-style();
@@ -9,18 +9,22 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 20px;
+
+    .shop-item-search{
+        width: 100%;
+        height: 30px;
+    }
     
     .shop-item-list{
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        width: 90%;
-
+        gap: 25px;
+        width: 100%;
         .shop-item-group{
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 20px;
 
             .shop-item-letter{
                 font-size: $h3-size;

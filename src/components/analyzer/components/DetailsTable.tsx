@@ -4,6 +4,7 @@ import { summaryService } from "../../summary/services/summaryService";
 import { useAxios } from "../../../shared/hooks/useAxios";
 import { Summary } from "../../summary/models/summaryModel";
 import "./styles/details-table.scss";
+import { TokenStorage } from "../../../shared/services";
 
 type Expense = {
   sector: string;
@@ -13,6 +14,9 @@ type Expense = {
 
 export const DetailsTable = () => {
     const { state: modalState } = useContext(ModalContext)
+
+    const usertoken = TokenStorage.getToken();  
+    const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
 
     const itemRegister = modalState.data?.dataToUse?.register 
 
@@ -78,8 +82,8 @@ export const DetailsTable = () => {
                 {tableData.map((data) => (
                     <tr key={data.sector}>
                         <th>{data.sector}</th>
-                        <td>{data.expenses}</td>
-                        {summary?.period === "month" && data.budget !== 0 ? <td>{data.budget}</td> :
+                        <td>{data.expenses} {userInfo?.currency}</td>
+                        {summary?.period === "month" && data.budget !== 0 ? <td>{data.budget} {userInfo?.currency}</td> :
                         summary?.period === "month" ? <td><p className="not-found-message">No establecido</p></td> : <></>}
                     </tr>
                 ))}
@@ -87,12 +91,12 @@ export const DetailsTable = () => {
                     summary?.period === "month" && 
                         <tr>
                             <th>General</th>
-                            <td>{summary?.totalSpent}</td>
+                            <td>{summary?.totalSpent} {userInfo?.currency}</td>
                             <td>{
                                 summary && summary.budgets && (
                                     summary.budgets[0].general
                                 ) 
-                            }</td>
+                            } {userInfo?.currency}</td>
                         </tr>
 
                 }

@@ -40,7 +40,7 @@ export const PurchaseList = ({ purchases, date }: Props) => {
     const handleEdit = (id: string | undefined, date: string | undefined) => {
         modalSetState({
             open: true,
-            data: { id, date: date, mode: "edit", form: "purchase" }
+            data: { id, date: date, mode: "edit", content: "purchase" }
         });
     }
 

@@ -57,28 +57,37 @@ export const AnalyzerContainer = () => {
                 </div>
 
                 <div className="content">
-                    <div className="analisis-section">
-                    <div className="items-list-header">
-                        <h3>Items seleccionados</h3>
-                        <button onClick={() => openModal()}>
-                            Agregar {`${state.period === "month" ? "mes" : "año"}`}
-                        </button>
+                    <div className="left-section">
+                        <div className="analisis-section">
+                            <div className="items-list-header">
+                                <h3>Items seleccionados</h3>
+                                <button onClick={() => openModal()}>
+                                    Agregar {`${state.period === "month" ? "mes" : "año"}`}
+                                </button>
+                            </div>
+                            <div className="analyzer-list-container">
+                                {state && state.items.length > 0 ?
+                                    <AnalyzerList />                        
+                                :
+                                    <p className="not-found-message">No hay items seleccionados</p>
+                                }
+                            </div>
+                        </div>
+
+                        <div className="chart comparison-table-container">
+                            <h3>{state.period === "year" ? `Tabla de gastos` : `Tabla de gastos y presupuestos`}</h3>
+                            <ComparisonTable />
+                        </div>
                     </div>
-                    {state && state.items.length > 0 ?
-                        <AnalyzerList />                        
-                    :
-                        <p className="not-found-message">No hay items seleccionados</p>
-                    }
-                    </div>
+
 
                     {state && state.items.length > 0 && 
-                        <>
-                            <ComparisonTable />
-                            <BarChart />
-                        </>
+                        <div className="chart bar-chart-container">
+                            <h3>{state.period === "year" ? `Gráfica de gastos` : `Gráfica de gastos y presupuestos`}</h3>
+                            <BarChart />    
+                        </div>
                     }
-
-                    
+ 
                 </div>
 
             <Modal>

@@ -14,11 +14,20 @@ const authContext = AuthContext;
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch(action.type){
         case AuthActionType.LOGIN:
-            return{ isAuthenticated: true, user: action.payload, loading: false }
+            return{ isAuthenticated: true, loading: false, user: action.payload }
+
         case AuthActionType.LOGOUT:
-            return { ...initialState, loading: false } 
+            return { isAuthenticated: false, user: null, loading: false };
+
+        case AuthActionType.UPDATE:
+            return { isAuthenticated: true, loading: false, user: action.payload };
+
         case AuthActionType.LOADED:
             return { ...state, loading: false }
+
+        case AuthActionType.DELETE_ACOUNT:
+            return { isAuthenticated: false, user: null, loading: false };
+
         default: 
         return state;
     }
@@ -33,10 +42,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             try{
                 const user: User = TokenStorage.decodeToken(token);
                 dispatch({ type: AuthActionType.LOGIN, payload: user });
+                dispatch({ type: AuthActionType.LOADED, payload: false });
             } catch (error){
                 console.error("Token invalido", error);
-                TokenStorage.removeToken();
                 dispatch({ type: AuthActionType.LOADED, payload: false });
+                TokenStorage.removeToken();
             }
         } else {
             dispatch({ type: AuthActionType.LOADED, payload: false });

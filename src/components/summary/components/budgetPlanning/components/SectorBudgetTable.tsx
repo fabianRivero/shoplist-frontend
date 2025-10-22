@@ -1,11 +1,14 @@
-import React from "react";
-import { capitalize, getMonthName } from "../../../../../shared/services";
+import React, { useCallback, useContext, useEffect } from "react";
+import { capitalize, getMonthName, TokenStorage } from "../../../../../shared/services";
 import { Budget } from "../../../models/summaryModel";
 import "./styles/table.scss";
+import { summaryService } from "../../../services/summaryService";
+import { useAxios } from "../../../../../shared/hooks/useAxios";
+import { SummaryActionType } from "../../../models/summaryState";
+import { SummaryContext } from "../../../context/summaryContext";
 
 interface SectorBudgetTableProps {
   year: number;
-  budgets?: Budget[];
   onOpenModal: (
     year: number,
     month?: number,
@@ -14,10 +17,40 @@ interface SectorBudgetTableProps {
     isNewSector?: boolean,
     isNewMonth?: boolean
   ) => void;
-  onDelete: (year: number, month: number, sector: string) => void;
 }
 
-export const SectorBudgetTable = ({ year, budgets, onOpenModal, onDelete }: SectorBudgetTableProps) => {
+export const SectorBudgetTable = ({ year, onOpenModal }: SectorBudgetTableProps) => {
+
+    const { state: summaryState, dispatch } = useContext(SummaryContext);
+
+  const deleteSectorBudgetServiceCall = useCallback(
+      (body: { year: string | number; month: string | number; sector: string }) => 
+      summaryService.deleteSectorBudget(body.year, body.month, body.sector), []
+  )
+
+  const { data: deleteSectorResponse, error: deleteSectorError, executeFetch: executeDeleteSectorBudgetFetch } = 
+      useAxios<{year: string | number, month: string | number, sector: string}, Budget>({
+      serviceCall: deleteSectorBudgetServiceCall,
+  })
+
+  const handleSectorBudgetDelete = async (year: string | number, month: string | number, sector: string) => {
+      if(!year || !month || !sector) return;
+      executeDeleteSectorBudgetFetch({year, month, sector})
+      
+  }
+  const usertoken = TokenStorage.getToken();  
+  const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+
+  useEffect(() => {
+      if (deleteSectorResponse && !deleteSectorError) {
+          dispatch({
+          type: SummaryActionType.DELETE_SECTOR_BUDGET,
+          payload: deleteSectorResponse
+          });
+
+      }
+  }, [dispatch, deleteSectorResponse, deleteSectorError])
+  
   return (
     <div className="sector table">
         
@@ -45,7 +78,7 @@ export const SectorBudgetTable = ({ year, budgets, onOpenModal, onDelete }: Sect
     
     <tbody>
 
-      {budgets?.map((budget) => {
+      {summaryState.summary?.budgets?.map((budget) => {
       const sectorCount = budget.sectors.length;
 
       return (
@@ -62,7 +95,7 @@ export const SectorBudgetTable = ({ year, budgets, onOpenModal, onDelete }: Sect
               )}
             <td>{capitalize(sector.sector)}</td>
             <td className={withBudget ? "" : "not-found-message"}>
-              {withBudget ? `${sector.budget} USD` : "No establecido"}
+              {withBudget ? `${sector.budget} ${userInfo?.currency}` : "No establecido"}
             </td>
             <td>
               {!withBudget ? (
@@ -82,7 +115,7 @@ export const SectorBudgetTable = ({ year, budgets, onOpenModal, onDelete }: Sect
                     >
                       Editar presupuesto
                     </button>
-                    <button onClick={() => onDelete(budget.year, budget.month, sector.sector)}>
+                    <button onClick={() => handleSectorBudgetDelete(budget.year, budget.month, sector.sector)}>
                       Borrar presupuesto
                     </button>
                   </>

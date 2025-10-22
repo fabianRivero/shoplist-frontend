@@ -2,14 +2,16 @@
 @import '../shared/styles/colors';
 @import '../shared/styles/fonts';
 @import '../shared/styles/box-style';
+@import '../shared/styles/responsive-breakpoints';
 
 .main-menu {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 25px 5px;
-    
+    padding: 25px;
+    padding-top: 50px;
+
     .summary-header {
         width: 100%;
         display: flex;
@@ -40,10 +42,63 @@
 
     .menu-section {
         @include box-style();
+    }
 
-        &:first-of-type {
-            margin-top: 55px;
+    @include respond-to("xs"){
+        padding: 35px;
+    }
+
+    @include respond-to("sm"){
+        padding: 60px 40px;
+        gap: 20px;
+        flex-direction: row;
+        align-items: flex-start;
+        height: 100vh;
+        overflow: scroll;
+
+        .menu-section{
+            overflow: scroll;
+            &:last-of-type, &:first-of-type {
+                margin-top: 30px;
+            }
+
+            .summary-header{
+                gap: 10px;
+                h2{
+                    font-size: $h3-size;
+                }
+            }
         }
+    }
+
+    @include respond-to("md"){
+        gap: 30px;
+        padding: 50px;
+        .menu-section{
+            &:last-of-type, &:first-of-type {
+                margin-top: 20px;
+            }
+            .summary-header{
+                gap: 15px;
+                h2{
+                    font-size: $h2-size;
+                }
+            }
+        }
+    }
+
+    @include respond-to("lg"){
+        gap: 40px;
+        padding: 50px 70px;
+        .menu-section{
+            .summary-header{
+                gap: 25px;
+            }
+        }
+    }
+
+    @include respond-to("xl"){
+        padding: 50px 100px;
     }
 }
 

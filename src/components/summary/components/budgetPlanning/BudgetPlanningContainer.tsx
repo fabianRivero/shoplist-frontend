@@ -1,4 +1,4 @@
-import { Budget, Summary } from "../../models/summaryModel";
+import { Summary } from "../../models/summaryModel";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ModalContext } from "../../../../shared/components/modal/context";
 import { useAxios } from "../../../../shared/hooks/useAxios";
@@ -36,36 +36,6 @@ export function BudgetPlanningContainer() {
         trigger: true
     })
 
-    const deleteGeneralBudgetServiceCall = useCallback(
-        (body: { year: string | number; month: string | number }) => 
-        summaryService.deleteGeneralBudget(body.year, body.month), []
-    )
-
-    const { data: deleteGeneralResponse, error: deleteGeneralError, executeFetch: executeDeleteGeneralBudgetFetch } = 
-    useAxios<{year: string | number, month: string | number}, Budget>({
-        serviceCall: deleteGeneralBudgetServiceCall,
-    })
-
-    const handleGeneralBudgetDelete = async (year: string | number, month: string | number) => {
-        if(!year || !month) return;
-        executeDeleteGeneralBudgetFetch({year, month})
-    }
-
-    const deleteSectorBudgetServiceCall = useCallback(
-        (body: { year: string | number; month: string | number; sector: string }) => 
-        summaryService.deleteSectorBudget(body.year, body.month, body.sector), []
-    )
-
-    const { data: deleteSectorResponse, error: deleteSectorError, executeFetch: executeDeleteSectorBudgetFetch } = 
-        useAxios<{year: string | number, month: string | number, sector: string}, Budget>({
-        serviceCall: deleteSectorBudgetServiceCall,
-    })
-
-    const handleSectorBudgetDelete = async (year: string | number, month: string | number, sector: string) => {
-        if(!year || !month || !sector) return;
-        executeDeleteSectorBudgetFetch({year, month, sector})
-    }
-
     const openModal = (
     year: number,
     month?: number,
@@ -79,25 +49,11 @@ export function BudgetPlanningContainer() {
     };
 
     useEffect(() => {
-        if(summary) { 
-            dispatch({ type: SummaryActionType.GET, payload: summary })
+        if (summary) {
+            dispatch({ type: SummaryActionType.GET, payload: summary });
         }
+    }, [summary, dispatch]);
 
-        if (deleteGeneralResponse && !deleteGeneralError) {
-            dispatch({
-            type: SummaryActionType.DELETE_GENERAL_BUDGET,
-            payload: deleteGeneralResponse
-            });
-        }
-
-        if (deleteSectorResponse && !deleteSectorError) {
-            dispatch({
-            type: SummaryActionType.DELETE_SECTOR_BUDGET,
-            payload: deleteSectorResponse
-            });
-        }
-
-    }, [dispatch, summary, deleteGeneralResponse, deleteGeneralError, deleteSectorResponse, deleteSectorError])
 
     if(isLoading) return <p>Cargando...</p>
     if(error) return <p>Error: {error}</p>
@@ -114,16 +70,12 @@ export function BudgetPlanningContainer() {
             <div className="tables-container">
             <GeneralBudgetTable
                 year={year}
-                budgets={state.summary?.budgets}
                 onOpenModal={openModal}
-                onDelete={handleGeneralBudgetDelete}
             />
 
             <SectorBudgetTable
                 year={year}
-                budgets={state.summary?.budgets}
                 onOpenModal={openModal}
-                onDelete={handleSectorBudgetDelete}
             />
             </div>
 

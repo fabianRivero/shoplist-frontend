@@ -17,3 +17,25 @@ $breakpoints: (
     @warn "El breakpoint `#{$size}` no existe en el mapa.";
   }
 }
+
+/*
+@include respond-to("xs"){
+
+}
+
+@include respond-to("sm"){
+
+}
+
+@include respond-to("md"){
+
+}
+
+@include respond-to("lg"){
+
+}
+
+@include respond-to("xl"){
+
+}
+*/

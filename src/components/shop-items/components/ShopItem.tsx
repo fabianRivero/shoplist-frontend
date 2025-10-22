@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { shopItem } from "../models";
-import { capitalize } from "../../../shared/services";
+import { capitalize, TokenStorage } from "../../../shared/services";
 
 import "./styles/shop-item.scss";
 
@@ -10,6 +10,9 @@ interface Props {
 }
 
 export const ShopItem = ({ shopItem, children }: Props) => {
+    const usertoken = TokenStorage.getToken();  
+    const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+
     return (
         <li className="shop-item">
             <div className="item">
@@ -20,7 +23,7 @@ export const ShopItem = ({ shopItem, children }: Props) => {
                 </h3>
                 <span className="item-stat">
                     <h4>Precio: </h4>
-                    {shopItem.price} {shopItem.currency} por {shopItem.quantity} {shopItem.unit}
+                    {shopItem.price} {userInfo?.currency} por {shopItem.quantity} {shopItem.unit}
                 </span>
             </div>
             {children}

@@ -1,9 +1,9 @@
 @import "../../../shared/styles/colors";
 @import "../../../shared/styles/fonts";
+@import "../../../shared/styles/responsive-breakpoints";
 
 .react-calendar{
-    width: 95%;
-    margin: 0px 15px;
+    width: 100%;
     border-radius: 15px;
 
     .react-calendar__navigation{
@@ -43,9 +43,36 @@
     }
 
     .calendar-purchase{
-        font-size: 0.5rem;
+        font-size: 8px;
         color: $green-hover;
         font-weight: 700;
         line-height: 8px;
     }
+
+    @include respond-to("xs"){
+        .calendar-purchase{
+            font-size: 8.5px;
+            display: flex;
+            justify-content: center;
+        }
+    }
+
+    @include respond-to("sm"){
+        .calendar-purchase{
+            font-size: 7px;
+        }
+    }
+
+    @include respond-to("md"){
+
+    }
+
+    @include respond-to("lg"){
+
+    }
+
+    @include respond-to("xl"){
+
+    }
+
 }

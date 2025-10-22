@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
 import { AnalyzerContext } from "../context/analyzerContext";
@@ -28,9 +28,11 @@ export const AddItemForm = () => {
 
     const { state, dispatch } = useContext(AnalyzerContext)
     const { setState: modalSetState } = useContext(ModalContext)
+    const [loading, setLoading] = useState(false)
 
     const onSubmit: SubmitHandler<MonthFormData> = async (data) => {
         try {
+            setLoading(true);
             let result: register;
             if(state.period === "month"){
             result = await analyzerService.getItem(state.period, `${data.year}-${data.month}-01`, data.sector) 
@@ -44,15 +46,18 @@ export const AddItemForm = () => {
 
         if (exists) {
             alert("Ese item ya está agregado");
+            setLoading(false)
             return; 
         }
 
             dispatch({ type: AnalyzerActionType.ADD, payload: result })
 
             modalSetState({ open: false })
+            setLoading(false)
         } catch (error) {
            if(error instanceof Error)
-            alert(error.message || "Error en la operación") 
+            alert(error.message || "Error en la operación")
+           setLoading(false)
         }
     }
 
@@ -100,7 +105,9 @@ export const AddItemForm = () => {
                 <input type="hidden" value={state.period} {...register("period")} />
                 <input type="hidden" value="" {...register("sector")} />
 
-                <button type="submit" className="button">Agregar</button>
+                <button type="submit" className="button" disabled={loading}>
+                    {loading === true ? `Agregando...` : `Agregar`}
+                </button>
             </form>
         </div>
     )

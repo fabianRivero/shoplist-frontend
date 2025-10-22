@@ -11,8 +11,8 @@ import { ShopItemContext } from "../../shop-items/context/shopItem";
 import { shopItem } from "../../shop-items/models";
 import { Purchase } from "../models/shopListModel";
 import { AuthContext } from "../../../auth/context";
+import { capitalize, TokenStorage } from "../../../shared/services";
 import "./styles/purchase-form.scss";
-import { capitalize } from "../../../shared/services";
 
 const createPurchaseSchema = z.object({
   date: z.string(),
@@ -22,7 +22,6 @@ const createPurchaseSchema = z.object({
   purchaseQuantity: z.number().min(1, "La cantidad de compra es requerida"),
   unit: z.string().min(1, "La unidad es requerida"),
   price: z.number().min(0.01, "el precio es requerido"),
-  currency: z.string().min(1, "La moneda es requerida"),
   brand: z.string().optional(),
   sector: z.string().optional(),
 });
@@ -45,9 +44,14 @@ export const PurchaseForm = ({ mode }: Props) => {
   const { state: modalState, setState: modalSetState } = useContext(ModalContext);
   const [selectedItem, setSelectedItem] = useState<shopItem | Purchase | null>(null);
   const userState = useContext(AuthContext)
+  const [loading, setLoading] = useState(false)
 
   const id = modalState.data?.id;
   const date = modalState.data?.date;
+
+  const usertoken = TokenStorage.getToken();  
+  const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+
 
   const { register, handleSubmit, formState, reset, watch } = useForm<
   CreatePurchaseData | UpdatePurchaseData
@@ -70,6 +74,7 @@ export const PurchaseForm = ({ mode }: Props) => {
   const onSubmit = async (data: CreatePurchaseData | UpdatePurchaseData) => {
 
     try{
+      setLoading(true)
       const userId = userState.state.user?.id
       if(!userId) throw new Error("Usuario no encontrado");
       if (!date) throw new Error("Fecha no definida");
@@ -91,7 +96,6 @@ export const PurchaseForm = ({ mode }: Props) => {
             purchaseQuantity: fullData.purchaseQuantity,
             unit: fullData.unit,
             price: fullData.price,
-            currency: fullData.currency,
             brand: fullData.brand,
             sector: fullData.sector,
           }
@@ -111,21 +115,26 @@ export const PurchaseForm = ({ mode }: Props) => {
       let result = null;
 
       if (mode === "edit") {
-        if (!editedPurchase.date) throw new Error("Compra no registrada");
+        if (!editedPurchase.date) {
+          setLoading(false)
+          throw new Error("Compra no registrada");
+        }
 
-        // actualizar compra
         const response = await purchaseService.updatePurchase(editedPurchase);
         dispatch({ type: PurchaseActionType.UPDATE_PURCHASE, payload: response });
-
+        setLoading(false)
       } else {
-        // crear compra
         result = await purchaseService.createPurchase(createdPurchase);
         dispatch({ type: PurchaseActionType.CREATE_PURCHASE, payload: result });
+        setLoading(false)
       }
-
       modalSetState({ open: false, data: modalState.data });
+      setLoading(false)
     } catch (error){
       if(error instanceof Error) alert(error.message || "Error en la operación")
+      setLoading(false)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -142,7 +151,6 @@ export const PurchaseForm = ({ mode }: Props) => {
           purchaseQuantity: 0,
           unit: foundItem.unit ?? "",
           price: foundItem.price ?? 0,
-          currency: foundItem.currency ?? "",
           brand: foundItem.brand ?? "",
           sector: foundItem.sector ?? ""
         });
@@ -169,7 +177,6 @@ export const PurchaseForm = ({ mode }: Props) => {
       purchaseQuantity: foundPurchase.purchaseQuantity ?? 0,
       unit: foundPurchase.unit ?? "",
       price: foundPurchase.price ?? 0,
-      currency: foundPurchase.currency ?? "",
       brand: foundPurchase.brand ?? "",
       sector: foundPurchase.sector ?? ""
     });
@@ -202,7 +209,7 @@ export const PurchaseForm = ({ mode }: Props) => {
             {mode === "create" ? (
               <p className="price">
                 Precio por {selectedItem.unit}: 
-                <strong>{selectedItem.price.toFixed(2)}</strong> {selectedItem.currency}
+                <strong>{selectedItem.price.toFixed(2)}</strong> {userInfo?.currency}
               </p>
               ) : (
               <div> 
@@ -211,7 +218,7 @@ export const PurchaseForm = ({ mode }: Props) => {
                   register={register("price", { valueAsNumber: true })}
                   type="number"
                   error={formState.errors.price?.message}
-                /> {selectedItem.currency}
+                /> {userInfo?.currency}
               </div>
             )}
 
@@ -219,7 +226,7 @@ export const PurchaseForm = ({ mode }: Props) => {
               Cantidad comprada: <strong>{purchaseQuantity}</strong> {selectedItem.unit}
             </p>
             <p>
-                Costo total: <strong>{totalCost.toFixed(2)}</strong> {selectedItem.currency}
+                Costo total: <strong>{totalCost.toFixed(2)}</strong> {userInfo?.currency}
               </p>
               {selectedItem.sector && (
                 <p>Sector: {selectedItem.sector}</p>
@@ -228,7 +235,19 @@ export const PurchaseForm = ({ mode }: Props) => {
         </>
     )}
 
-    <button type="submit">{mode === "edit" ? "Actualizar compra" : "Añadir compra"}</button>
+    <button type="submit" disabled={loading} >
+      <>
+        {mode === "edit" ? (
+          <>
+            {loading ? "Actualizando..." : "Actualizar compra"}   
+          </>
+        ) : (
+          <>
+            {loading ? "Añadiendo..." : "Añadir compra"}   
+          </>  
+        )}
+      </>
+    </button>
   </form>
 </div>
   )

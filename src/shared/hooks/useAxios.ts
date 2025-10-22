@@ -43,7 +43,7 @@ export const useAxios = <B, D>({ serviceCall, trigger = false }: Props<B, D>): R
             setData(response);
         } catch (err: unknown){
             if(axios.isCancel(err)){
-                console.log("Petición cancelada", (err as Error).message);
+                console.warn("Petición cancelada", (err as Error).message);
             } else if (axios.isAxiosError(err)){
                 if (err.status === 403 || err.status === 401){
                     dispatch({ type: AuthActionType.LOGOUT })

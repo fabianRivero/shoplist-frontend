@@ -2,8 +2,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 150px;   
-    height: 150px;  
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;   
+    margin: 0 auto;
     position: relative;
     gap: 0.5rem;
 

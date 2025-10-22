@@ -16,7 +16,6 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-
 export const LoginForm = () => {
     const { register, handleSubmit, formState } = useForm<LoginFormData>(
         { resolver: zodResolver(loginSchema) }
@@ -36,7 +35,6 @@ export const LoginForm = () => {
                 alert(error.message || "Error al iniciar sesión");
             }
         }
-        
     }
 
     return(
@@ -44,7 +42,7 @@ export const LoginForm = () => {
             <h2>Iniciar Sesión</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
                 <FormInput label="Email" register={register("email")} error = {formState.errors.email?.message} />
-                <FormInput label="Password" register={register("password")} error = {formState.errors.password?.message} type="password" />
+                <FormInput label="Contraseña" register={register("password")} error = {formState.errors.password?.message} type="password" />
                 <button type="submit">Iniciar Sesión</button>
             </form>
 

@@ -73,7 +73,6 @@ export const LinkList = ({ cls, isFromMenu = false, onLinkClick }: Props) =>{
 
     return(
         <nav className={cls}>
-            <button className="link-button" onClick={logout}>Cerrar Sesión</button>
             <button className="link-button" onClick={goToMenu}>Menú</button>
             <button className="link-button" onClick={goToItems}>Productos</button>
             <button className="link-button" onClick={goToBudgetPlanning}>Establecer Presupuestos</button>

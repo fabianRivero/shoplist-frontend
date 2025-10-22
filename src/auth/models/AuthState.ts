@@ -1,7 +1,9 @@
 export enum AuthActionType {
   LOGIN = "LOGIN",
   LOGOUT = "LOGOUT",
-  LOADED = "LOADED"  
+  UPDATE = "UPDATE",
+  LOADED = "LOADED",
+  DELETE_ACOUNT = "DELETE_ACOUNT"  
 };
 
 export interface User {
@@ -9,15 +11,19 @@ export interface User {
     username: string;
     email: string;
     role: string;
+    currency: string;
+    isConfigured: boolean;
 }
 
 export interface AuthState { 
   isAuthenticated: boolean;
   user: User | null;
-  loading: boolean
+  loading: boolean;
 }
 
 export type AuthAction = 
   | { type: AuthActionType.LOGIN; payload: User  }
   | { type: AuthActionType.LOADED; payload: boolean }
-  | { type: AuthActionType.LOGOUT };
+  | { type: AuthActionType.UPDATE; payload: User }
+  | { type: AuthActionType.LOGOUT }
+  | { type: AuthActionType.DELETE_ACOUNT }

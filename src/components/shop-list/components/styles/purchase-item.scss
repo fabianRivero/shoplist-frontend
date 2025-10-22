@@ -1,5 +1,6 @@
 @import "../../../../shared/styles/fonts";
 @import "../../../../shared/styles/colors";
+@import "../../../../shared/styles/responsive-breakpoints";
 
 .purchase-item {
     display: flex;
@@ -18,5 +19,9 @@
         border-bottom: none;
         padding-bottom: 0;
         margin-bottom: 0px;
+    }
+
+    @include respond-to("sm"){
+        overflow: scroll;
     }
 }

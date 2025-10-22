@@ -1,18 +1,56 @@
+@import "../../../../../shared/styles/colors";
+@import "../../../../../shared/styles/responsive-breakpoints";
+
 .budget-summary-container{
     padding: 20px;
-    padding-top: 80px;
+    padding-top: 70px;
+    background-color: $background;
 
-}
-
-.budget-summary {
+    .budget-summary {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
+    gap: 15px;
+    }
 
-.tables-container{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
+    .tables-container{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    @include respond-to("sm"){
+        padding-top: 80px;
+    }
+
+    @include respond-to("md"){
+        padding: 40px;
+        padding-top: 70px;
+        height: 100vh;
+        overflow: scroll;
+
+        .tables-container{
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            align-items: flex-start;
+        }
+    }
+
+    @include respond-to("lg"){
+        padding: 50px;
+        padding-top: 70px;
+        .tables-container{
+            gap: 25px;
+        }
+    }
+
+    @include respond-to("xl"){
+        padding: 100px;
+        padding-top: 70px;
+        
+        .tables-container{
+            gap: 40px;
+        }
+    }
 }

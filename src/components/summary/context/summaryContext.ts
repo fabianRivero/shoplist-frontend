@@ -10,5 +10,5 @@ export const SummaryContext = createContext<{
     dispatch: React.Dispatch<SummaryAction>;
 }>({
     state: initialState,
-    dispatch: () => null
+    dispatch: () => null,
 });

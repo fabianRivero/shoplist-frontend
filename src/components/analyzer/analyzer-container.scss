@@ -1,6 +1,7 @@
 @import "../../shared/styles/box-style";
 @import "../../shared/styles/buttons";
 @import "../../shared/styles/colors";
+@import "../../shared/styles/responsive-breakpoints";
 
 .analyzer-container{
     padding: 20px;
@@ -34,23 +35,92 @@
         display: flex;
         flex-direction: column;
         gap: 25px;
+
+        .left-section{
+            display: flex;
+            flex-direction: column;
+            gap: 20px
+        }
+
+        .chart{
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .analisis-section{
             @include box-style();
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             gap: 20px;
+            overflow: scroll;
 
             .items-list-header{
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                gap: 15px;
+            }
+
+            .analyzer-list-container{
+                width: 100%;
             }
 
             .not-found-message{
                 padding: 20px;
             }
+        }
+
+        .comparison-table-container{
+            width: 100%;
+            overflow: scroll;
+        }
+    }
+
+    @include respond-to("xs"){
+        .analyzer-container-header{
+            padding: 0px 40px;
+        } 
+    }
+
+    @include respond-to("sm"){
+        .analyzer-container-header{
+            justify-content: flex-start;
+            gap: 20px;
+            padding: 0;
+        }
+
+        .content{
+            align-items: flex-start;
+            gap: 25px;
+            flex-direction: row;
+
+            .bar-chart-container{
+                margin-top: 30px;
+            }
+        }
+    }
+
+    @include respond-to("md"){
+
+        .content{
+            gap: 30px;
+        }
+    }
+
+    @include respond-to("lg"){
+        .content{
+            padding: 10px;
+            padding-top: 0;
+            gap: 40px;
+        }
+    }
+
+    @include respond-to("xl"){
+        .content{
+            gap: 60px;
         }
     }
 }

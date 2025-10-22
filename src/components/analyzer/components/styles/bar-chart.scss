@@ -1,13 +1,36 @@
 @import "../../../../shared/styles/buttons";
 
-#sector-select {
-    @include button-style();
-    padding: 5px 10px;
 
-    option{
-        color: white;
-        &:hover{
-            color: white !important;
-        } 
-    }  
+.bar-chart{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    .graphic-container {
+        width: 100%;
+        max-width: 900px;
+        height: auto;
+        min-height: 300px;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    label{
+        align-self: flex-start;
+        #sector-select {
+            @include button-style();
+            padding: 5px 10px;
+
+            option{
+                color: white;
+                &:hover{
+                    color: white !important;
+                } 
+            }  
+        }
+    }
 }

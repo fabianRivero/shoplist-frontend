@@ -1,6 +1,6 @@
 import { register } from "../models/analyzerModel"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { summaryService } from "../../summary/services/summaryService";
 import { useAxios } from "../../../shared/hooks/useAxios";
 import { Summary } from "../../summary/models/summaryModel";
@@ -20,6 +20,8 @@ export const ItemDetails = ({ item }: Props) => {
     const day = item.register.startDate.slice(8, 10);
     const date = `${year}-${month}-${day}`;
 
+    const [expensesExist, setExpensesExist] = useState(false);
+
     const period = item.register.period;
 
     const serviceCall = useCallback(() => summaryService.getSummary(date, period), [date, period])
@@ -28,71 +30,75 @@ export const ItemDetails = ({ item }: Props) => {
         trigger: true
     })
 
-    const getAllData = ()  => {
-        const expensesSectorSet = new Set<string>();
-        const budgetsSectorSet = new Set<string>();
+    const { expensesData, budgetsData } = useMemo(() => {
+    if (!summary?.budgets) return { expensesData: [], budgetsData: [] };
+    
+    const expensesSectorSet = new Set<string>();
+    const budgetsSectorSet = new Set<string>();
 
-        if (summary?.budgets){
-            summary?.budgets.forEach((budget) => {
-                budget.sectors.forEach((sector) => {
-                    expensesSectorSet.add(sector.sector);
-                })
+    summary.budgets.forEach((budget) => {
+        budget.sectors.forEach((sector) => {
+        expensesSectorSet.add(sector.sector);
+        if (budget.general > 0 && sector.budget && sector.budget > 0)
+            budgetsSectorSet.add(sector.sector);
+        });
+    });
 
-                if(budget.general > 0){
-                    budget.sectors.forEach((sector) => {
-                        if(sector.budget && sector.budget > 0) 
-                            budgetsSectorSet.add(sector.sector)
-                    })
-                }
-            })
-        }
-            
-        const expensesSectorArray = Array.from(expensesSectorSet)
-        const budgetsSectorArray = Array.from(budgetsSectorSet)
+    const buildData = (sectorArray: string[], type: "expenses" | "budgets") =>
+        sectorArray.map((sectorName) => {
+        let total = 0;
+        summary.budgets?.forEach((budget) => {
+            budget.sectors.forEach((sector) => {
+            if (sector.sector === sectorName) {
+                total += type === "expenses" ? sector.spent : sector.budget || 0;
+            }
+            });
+        });
+        return { existingSector: sectorName, total };
+        });
 
-        const data = (sectorArray: Array<string>, datatype: "expenses" | "budgets"): Array<{ 
-            existingSector: string, total: number } | undefined
-            > => {
-            return sectorArray.map((existingSector) => {
-                let total = 0;
+    return {
+        expensesData: buildData(Array.from(expensesSectorSet), "expenses"),
+        budgetsData: buildData(Array.from(budgetsSectorSet), "budgets"),
+    };
+    }, [summary]);
 
-                if(summary?.budgets){
-                    summary?.budgets.forEach((budget) => {
-                        budget.sectors.forEach((sector) => {
-                            if (sector.sector === existingSector) {
-                                if(datatype === "expenses"){
-                                    total += sector.spent
-                                } else {
-                                    total = sector.budget || 0
-                                }
-                            }
-                        })
-                    })
+    const expensesSectorsLabels = expensesData.map(d => d.existingSector);
+    const expensesSectorsData = expensesData.map(d => d.total);
+    const budgetsSectorsLabels = budgetsData.map(d => d.existingSector);
+    const budgetsSectorsData = budgetsData.map(d => d.total);
 
-                    return { existingSector, total }
-                }
-                return;
-            })
-        } 
-        const expensesData = data(expensesSectorArray, "expenses");
-        const budgetsData = data(budgetsSectorArray, "budgets"); 
 
-        return { expensesData, budgetsData }
-    }
+    useEffect(() => {
+    const hasExpenses = expensesSectorsData.some((data) => data && data > 0);
+    setExpensesExist(hasExpenses);
+    }, [expensesSectorsData]);
 
-    const expensesSectorsLabels = getAllData().expensesData.map((data) => data?.existingSector)
-    const expensesSectorsData = getAllData().expensesData.map((data) => data?.total)
-
-    const budgetsSectorsLabels = getAllData().budgetsData.map((data) => data?.existingSector)
-    const budgetsSectorsData = getAllData().budgetsData.map((data) => data?.total)
 
     return(
         <section className="item-details">
             <h2>Detalles del item</h2>
             
             <div className="pie-charts-container">
-                <PieChart graficSectors={expensesSectorsLabels} graficData={expensesSectorsData}/>
-                {item.register.period === "month" && <PieChart graficSectors={budgetsSectorsLabels} graficData={budgetsSectorsData}/>}
+                {expensesSectorsLabels.length > 0 && expensesSectorsData.length > 0 ? ( 
+                    <>
+                        {expensesSectorsLabels && expensesSectorsData && expensesExist ?
+                            <PieChart graficSectors={expensesSectorsLabels} graficData={expensesSectorsData} dataType="expenses" summaryData={summary}/>
+                            :
+                            <div className="not-found-message">No hay gastos que analizar en este item.</div>
+                        }
+                        
+                        { budgetsSectorsLabels.length > 0 && budgetsSectorsData.length > 0 && item.register.period === "month" ? 
+                            <PieChart graficSectors={budgetsSectorsLabels} graficData={budgetsSectorsData} dataType="budgets" summaryData={summary} />
+                        :  
+                            <div className="not-found-message">No hay presupuestos que analizar en este item.</div>
+                        }   
+                    </>
+                ) : (
+                        <div className="not-found-message">No hay datos que analizar en este item.</div> 
+                    )
+                }
+                
                 
             </div>
 

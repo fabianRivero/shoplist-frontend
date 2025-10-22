@@ -1,11 +1,12 @@
 @import "../../shared/styles/fonts";
 @import "../../shared/styles/colors";
+@import '../../shared/styles/responsive-breakpoints';
 
 .purchase-list-container {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    
+    overflow: scroll;
     .date{
         margin-bottom: 7px;
     }
@@ -14,7 +15,7 @@
         transition: max-height 0.4s ease-in-out;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 20px;
     }
     
     .show-button{

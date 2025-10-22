@@ -21,7 +21,6 @@ const shopItemSchema = z.object(
         quantity: z.number().min(0.01, "La cantidad es requerida"),
         unit: z.string().min(1, "La unidad es requerida"),
         price: z.number().min(0.01, "el precio es requerido"),
-        currency: z.string().min(1, "La moneda es requerida"),
         brand: z.string().optional(),
         sector: z.string().min(1, "Sector es necesario"),        
     })
@@ -126,10 +125,6 @@ export const ShopItemForm = ({ isModal = false }: Props) => {
                 register={register("price", { valueAsNumber: true })} 
                 type="number" 
                 error={formState.errors.price?.message} />
-                <FormInput 
-                label="Moneda" 
-                register={register("currency")} 
-                error={formState.errors.currency?.message} />
                 <FormInput 
                 label="Marca" 
                 register={register("brand")} 

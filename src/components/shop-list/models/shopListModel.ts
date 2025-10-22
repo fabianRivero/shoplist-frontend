@@ -1,7 +1,7 @@
 import { shopItem } from "../../shop-items/models";
 
 export interface Purchase extends Pick<shopItem, 
- "name" | "quantity" | "unit" | "price" | "currency" | "brand" | "sector"> {
+ "name" | "quantity" | "unit" | "price" | "brand" | "sector"> {
     productId: string;
     purchaseQuantity: number;
     purchaseId?: string;

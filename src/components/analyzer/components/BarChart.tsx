@@ -1,30 +1,66 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { AnalyzerContext } from '../context/analyzerContext';
-import { getMonthName } from '../../../shared/services';
-import { register } from '../models/analyzerModel';
+import { getMonthName, TokenStorage } from '../../../shared/services';
+import { TooltipItem } from "chart.js";
 import "./styles/bar-chart.scss";
+import { summaryService } from '../../summary/services/summaryService';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+interface sectorInfoProps {
+  sector: string,
+  spent: number,
+  budget: number,
+}
 
 export const BarChart = () => {
 
   const { state } = useContext(AnalyzerContext);
   const [sector, setSector] = useState<string>("General");
+  const [itemInfo, setItemInfo] = useState<{ sectorInfo: sectorInfoProps[]; generalBudget: number | null; generalSpent: number | null}[]>([]);
 
-  const sectors = useMemo(() => {
-      const sectorSet = new Set<string | undefined>()
+  const getInfo = async (date: string, period: string) => {
+    const year = date.slice(0, 4);
+    const month = date.slice(5, 7);
+    const day = date.slice(8, 10);
 
-      state.items.forEach(item => {
-          item.register.logs.forEach(log => {
-              log.purchases.forEach(purchase => {
-              sectorSet.add(purchase.sector)
-              })
-          })
+    const usedDate = `${year}-${month}-${day}`
+    
+    const sectorInfo: sectorInfoProps[] = []
+
+    const data = await summaryService.getSummary(usedDate, period)
+    
+    data.budgets?.forEach((budget) => {
+      budget.sectors.forEach((sector) => {
+        sectorInfo.push({sector: sector.sector, spent: sector.spent, budget: sector.budget || 0})
       })
-      return Array.from(sectorSet)
-  }, [state.items])
+    })
+
+    const generalBudget = data.budgets && data.budgets.length > 0  ? data.budgets[0].general : null;
+    const generalSpent = data.totalSpent ? data.totalSpent : null
+
+    return({ sectorInfo, generalBudget, generalSpent })
+  } 
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      if (state.items.length === 0) return;
+
+      const promises = state.items.map((item) =>
+        getInfo(item.register.startDate, state.period)
+      );
+
+      const results = await Promise.all(promises);
+      setItemInfo(results);
+    };
+
+    fetchAll();
+  }, [state.items, state.period]);
+
+  const usertoken = TokenStorage.getToken();  
+  const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
 
   const formattedDate = (data: string) => {
       const month = getMonthName({num: Number(data.slice(5, 7))})
@@ -36,24 +72,18 @@ export const BarChart = () => {
       return date
   }
 
-  const getTotal = (item: register) => {
-      let count = 0
-      item.register.logs.forEach(log => {
-        if (sector === "General"){ 
-          log.purchases.forEach(purchase => {
-           count += (purchase.purchaseQuantity * purchase.price)
-          })
-        } else {
-          log.purchases.forEach(purchase => {
-            if (purchase.sector === sector) {
-              count += (purchase.purchaseQuantity * purchase.price)
-            }
-          })
-        }
+  const sectors = useMemo(() => {
+    const sectorSet = new Set<string>();
+
+    itemInfo.forEach((item) => {
+      item.sectorInfo.forEach((sector) => {
+        sectorSet.add(sector.sector)
       })
-      return count
-  }
+    })
+    return Array.from(sectorSet)
+  }, [itemInfo]) 
   
+
   const itemDates = useMemo(() => {
       const dateSet = new Set<string>()
 
@@ -65,25 +95,71 @@ export const BarChart = () => {
   }, [state.items])
 
   const monthLabels = itemDates.map(date => formattedDate(date));
-  const totals = state.items.map(item => getTotal(item));
 
-  const data = {
+  const totals = useMemo(() => {
+    const spentInfo: (number | null)[] = []
+    const budgetInfo: (number | null)[] = []
+    itemInfo.forEach((item) => {
+      if(sector === "General"){
+          spentInfo.push(item.generalSpent)
+          budgetInfo.push(item.generalBudget)
+      } else{
+          item.sectorInfo.forEach((sec) => {
+            if(sector === sec.sector){
+              spentInfo.push(sec.spent)
+              budgetInfo.push(sec.budget)
+            }   
+        })
+      }
+    })
+
+    return { spentInfo, budgetInfo }
+    
+  }, [itemInfo, sector])
+
+
+
+  const data = state.period !== "year" ? {
     labels: monthLabels,
     datasets: [
       {
         label: 'Gastos',
-        data: totals,
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        data: totals.spentInfo,
+        backgroundColor: 'rgba(255, 0, 0, 0.6)',
+      },
+      {
+        label: 'Presupuestos',
+        data: totals.budgetInfo,
+        backgroundColor: 'rgba(0, 255, 0, 0.6)',
       },
     ],
-  };
+  } : {
+    labels: monthLabels,
+    datasets: [
+      {
+        label: 'Gastos',
+        data: totals.spentInfo,
+        backgroundColor: 'rgba(255, 0, 0, 0.6)',
+      },
+    ],
+  }
 
   const options = {
     indexAxis: 'y' as const,
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const,
+      },
+      tooltip: {
+          callbacks: {
+          label: function (context: TooltipItem<"bar">) {
+              const label = context.label || "";
+              const value = context.raw || 0;
+              return `${label}: ${value} ${userInfo?.currency}`;
+          },
+          },
       },
       title: {
         display: true,
@@ -93,7 +169,7 @@ export const BarChart = () => {
   };
  
   return (
-    <>
+    <div className='bar-chart'>
       <label>
         <select 
             name="sectors" 
@@ -108,8 +184,16 @@ export const BarChart = () => {
               }
         </select>
       </label>
-  
-      <Bar data={data} options={options} />
-    </>
+      <div 
+        className='graphic-container'
+        style={{ height: `${Math.max(300, monthLabels.length * 60)}px` }}      
+      >
+        <Bar 
+          key={monthLabels.length} 
+          data={data} 
+          options={options} 
+        />      
+      </div>
+    </div>
   )
 }

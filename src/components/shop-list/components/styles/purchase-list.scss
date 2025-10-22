@@ -1,9 +1,10 @@
 @import "../../../../shared/styles/buttons";
+@import "../../../../shared/styles/colors";
+@import "../../../../shared/styles/responsive-breakpoints";
 
 .purchase-list {
-    display: flex;
-    flex-direction: column;
-    gap: 13px;
+    border-bottom: .5px solid $separator;
+    padding: 10px;
 
     .purchase-actions{
       display: flex;

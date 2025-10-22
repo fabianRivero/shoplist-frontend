@@ -28,7 +28,7 @@ export const RegisterForm = () => {
     const onSubmit = async(data: RegisterFormData) => {
         try{
             const authService = new AuthService();
-            await authService.register(data.email, data.username, data.password);
+            await authService.register(data.email, data.password, data.username);
             alert("Registro Existoso");
             navigate("/");
         } catch (error) {
@@ -42,12 +42,12 @@ export const RegisterForm = () => {
             <h2>Regístrate</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
                 <FormInput label="Email" register={register("email")} error={formState.errors.email?.message} />
-                <FormInput label="Username" register={register("username")} error={formState.errors.username?.message} />
-                <FormInput label="Password" register={register("password")} error={formState.errors.password?.message} type="password" />
-                <FormInput label="Confirm Password" register={register("confirmPassword")} error={formState.errors.confirmPassword?.message} type="password" />
+                <FormInput label="Nombre de usuario" register={register("username")} error={formState.errors.username?.message} />
+                <FormInput label="Contraseña" register={register("password")} error={formState.errors.password?.message} type="password" />
+                <FormInput label="Confirmar contraseña" register={register("confirmPassword")} error={formState.errors.confirmPassword?.message} type="password" />
                 <button type="submit">Registrarse</button>
-                <p>¿Ya tienes una cuenta? <Link to={"/"}><span className="change">Inicia sesión</span></Link></p>
             </form>
+            <p>¿Ya tienes una cuenta? <Link to={"/"}><span className="change">Inicia sesión</span></Link></p>
         </div>
     );
 }

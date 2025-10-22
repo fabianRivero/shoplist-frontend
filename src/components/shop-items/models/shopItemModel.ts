@@ -5,7 +5,6 @@ export interface shopItem {
     quantity: number;
     unit: string;
     price: number;
-    currency: string;
     brand?: string;
     sector?: string; 
 }

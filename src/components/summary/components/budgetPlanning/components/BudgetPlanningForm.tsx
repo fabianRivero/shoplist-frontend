@@ -2,13 +2,13 @@ import z from "zod";
 import { FormInput } from "../../../../../shared/components";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { SummaryContext } from "../../../context/summaryContext";
 import { ModalContext } from "../../../../../shared/components/modal/context";
 import { SummaryActionType } from "../../../models/summaryState";
 import { summaryService } from "../../../services/summaryService";
 import "./styles/budget-palnning-form.scss";
-import { capitalize } from "../../../../../shared/services";
+import { capitalize, TokenStorage } from "../../../../../shared/services";
 import { FormSelect } from "../../../../../shared/components/FormSelect";
 
 type Props = {
@@ -36,6 +36,11 @@ const budgetPlanningFormSchema = z.object(
         })
         const { dispatch } = useContext(SummaryContext)
         const { setState: modalSetState } = useContext(ModalContext)
+        const [loading, setLoading] = useState(false)
+
+        const usertoken = TokenStorage.getToken();  
+        const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+        
 
         const selectOptions = [
             { value: 1, label: "Enero" },
@@ -54,6 +59,7 @@ const budgetPlanningFormSchema = z.object(
 
         const onSubmit = async (data: budgetPlanningData) => {
         try {
+            setLoading(true);
             let result;
 
             if (isNewMonth) {
@@ -74,10 +80,12 @@ const budgetPlanningFormSchema = z.object(
             result = await summaryService.setGeneralBudget(year, month!, data.quantity);
             dispatch({ type: SummaryActionType.SET_GENERAL_BUDGET, payload: result });
             }
-
+            setLoading(false)
             modalSetState({open: false});
         } catch (error) {
             if (error instanceof Error) alert(error.message || "Error en la operación");
+        } finally{
+            setLoading(false)
         }
         };
 
@@ -119,10 +127,16 @@ const budgetPlanningFormSchema = z.object(
                     register={register("quantity", { valueAsNumber: true })}
                     error={formState.errors.quantity?.message}
                     />
-                    <span>USD</span>
+                    <span>{userInfo?.currency}</span>
                 </div>
                  
-                <button type="submit">Guardar</button>
+                <button type="submit" disabled={loading}>{
+                    loading ?
+                    `Guardando...` 
+                    :
+                    `Guardar`
+                }
+                </button>
             </form>
         )
 }

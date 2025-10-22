@@ -12,19 +12,28 @@ import { Header } from "../components/header/Header";
 import { PurchaseManagerContainer } from "../components/purchase-manager/PurchaseManagerContainer";
 import { AnalyzerProvider } from "../components/analyzer/context/AnalyzerReducer";
 import { AnalyzerContainer } from "../components/analyzer/AnalyzerContainer";
+import { InitialSetupContainer } from "../components/initialSetup/InitialSetupContainer";
 
 const PrivateRoute = ({ children }: { children: ReactNode}) => {
-    const { state } = useContext(AuthContext);
-    if (state.loading) {
-      return <div>Cargando...</div>; 
-    }
+  const { state } = useContext(AuthContext);
 
-    return state.isAuthenticated ? children : <Navigate to="/" />;
+  if (state.loading) return <div>Cargando...</div>;
+
+  if (!state.isAuthenticated) return <Navigate to="/" />;
+  
+  const currentPath = window.location.pathname;
+
+  if (!state.user?.isConfigured && currentPath !== "/setup") {
+    return <Navigate to="/setup" />;
+  }
+
+  return children;
 }
 
 export const AppRouter = () => (
   <Routes>
     <Route path="/*" element={<AuthContainer />} />
+    <Route path="/setup" element={<InitialSetupContainer />} />
     <Route path="/main-menu" element={<PrivateRoute><Header><SummaryProvider><PurchaseProvider><MainMenu/></PurchaseProvider></SummaryProvider></Header></PrivateRoute>} />
     <Route path="/budget-planning" element={<PrivateRoute><Header><SummaryProvider><BudgetPlanningContainer/></SummaryProvider></Header></PrivateRoute>}/>
     <Route path="/item-list" element={<PrivateRoute><Header><ShopItemProvider><ShopItemsContainer /></ShopItemProvider></Header></PrivateRoute>}/>

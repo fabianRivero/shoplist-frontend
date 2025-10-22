@@ -1,11 +1,15 @@
 import { useContext, useMemo } from "react"
 import { AnalyzerContext } from "../context/analyzerContext"
 import { register } from "../models/analyzerModel"
-import { getMonthName } from "../../../shared/services"
+import { getMonthName, TokenStorage } from "../../../shared/services"
 import "./styles/comparison-table.scss"
 
 export const ComparisonTable = () => {
     const { state } = useContext(AnalyzerContext)
+
+    const usertoken = TokenStorage.getToken();  
+    const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+    
 
     const sectors = useMemo(() => {
         const sectorSet = new Set<string | undefined>()
@@ -82,7 +86,7 @@ export const ComparisonTable = () => {
 
                                         return(
                                             <td key={`${sector}-${item.register.startDate}`}>
-                                            {total} $
+                                            {total} {userInfo?.currency}
                                             </td>
                                         )
                                         

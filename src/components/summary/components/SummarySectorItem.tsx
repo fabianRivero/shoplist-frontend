@@ -1,4 +1,4 @@
-import { capitalize } from "../../../shared/services";
+import { capitalize, TokenStorage } from "../../../shared/services";
 import "./summary-sector-item.scss"
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
 }
 
 export const SummarySectorItem = ({ sector, expense, budget, type }: Props) => {
+    const usertoken = TokenStorage.getToken();  
+    const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
     
   return (
     <>
@@ -24,7 +26,7 @@ export const SummarySectorItem = ({ sector, expense, budget, type }: Props) => {
       ) : (
         <li className="summary-item">
           <span className="sector-name">{capitalize(sector)}:</span>{" "}
-          <span>{expense}$</span>
+          <span>{expense} {userInfo?.currency}</span>
         </li>
       )}
     </>

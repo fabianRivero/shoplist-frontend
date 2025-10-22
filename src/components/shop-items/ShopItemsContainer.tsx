@@ -57,14 +57,15 @@ export const ShopItemsContainer = () => {
                 </button>
             </div>
             
-            {state && state.items.size > 0 ?
-            <ShopItemList items={sortedArray} />
-            :
-            <div className="not-found-message">No hay productos registrados</div>
-            }
+            <div className="products">
+                {state && state.items.size > 0 ?
+                <ShopItemList items={sortedArray} />
+                :
+                <div className="not-found-message">No hay productos registrados</div>
+                }
+            </div>
 
       <Modal>
-
         {modalState.data?.content === "shopItem" && <ShopItemForm isModal/>}
         {modalState.data?.content === "purchase" && 
         (modalState.data.mode === "create" ?

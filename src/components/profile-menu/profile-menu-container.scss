@@ -1,0 +1,47 @@
+@import "../../shared/styles/buttons";
+@import "../../shared/styles/fonts";
+@import "../../shared/styles/colors";
+
+.profile-menu-container{
+    padding: 5px 10px;
+    min-width: 250px;
+
+    .profile-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .change-section{
+            border: 1px solid $separator;
+            box-shadow: inset 1px 2px $separator;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .password-change {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        p {
+            display: flex;
+            gap: 5px;
+            align-items: flex-end;
+            
+            span {
+                font-size: $h4-size;
+                font-weight: bold;
+            }
+        }
+
+        button {
+            @include button-style();
+            padding: 5px 10px;
+        }
+    }
+}

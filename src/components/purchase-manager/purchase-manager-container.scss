@@ -1,13 +1,14 @@
 @import "../../shared/styles/buttons";
 @import "../../shared/styles/box-style";
+@import "../../shared/styles/colors";
+@import "../../shared/styles/responsive-breakpoints";
 
 .purchase-manager-container{
-    padding: 10px;
-    padding-top: 80px;
+    padding: 20px;
+    padding-top: 70px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 450px;
+    background-color: $background;
 
     .calendar-container{
         display: flex;
@@ -36,7 +37,57 @@
         @include box-style();
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
         gap: 12px;
+    }
+
+    @include respond-to("xs"){
+        padding: 45px;
+        padding-top: 70px;
+
+    }
+
+    @include respond-to("sm"){
+        padding: 5px;
+        padding-top: 80px;
+        flex-direction: row;
+        gap: 5px;
+        height: 100vh;
+        overflow: scroll;
         padding-bottom: 20px;
+
+        .shopList-container{
+            .shopList-container-title{
+                .shop-item-button{
+                    padding: 3px 5px;
+                }
+            }
+        }
+    }
+
+    @include respond-to("md"){
+        padding-bottom: 0;
+        padding: 20px;
+        padding-top: 70px;
+        gap: 10px;
+
+        .shopList-container{
+            .shopList-container-title{
+                .shop-item-button{
+                    padding: 6px 8px;
+                }
+            }
+        }
+    }
+
+    @include respond-to("lg"){
+        padding-bottom: 0;
+        padding: 70px;
+        gap: 20px;
+    }
+
+    @include respond-to("xl"){
+        padding: 70px;
+        gap: 30px;
     }
 }
