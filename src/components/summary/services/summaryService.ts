@@ -2,7 +2,7 @@ import { apiFetch } from "../../../shared/adapters/ApiAdapter";
 import { Budget, Summary } from "../models/summaryModel";
 
 class SummaryService {
-    private BASE_URL = `${import.meta.env.BASE_URL}/api`;
+    private BASE_URL = `${import.meta.env.VITE_APP_BASE_URL}/api`;
 
     async getSummary(date: string, period: string, sector: string = "" ): Promise<Summary> {
         const response = await apiFetch(`${this.BASE_URL}/summary?date=${date}&period=${period}&sector=${sector}`, {

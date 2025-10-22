@@ -1,7 +1,7 @@
 import { apiFetch } from "../../shared/adapters/ApiAdapter";
 
 export class AuthAdapter {
-    private BASE_URL = import.meta.env.BASE_URL;
+    private BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 
     async login(email: string, password: string): Promise<string>{
         const response = await apiFetch(`${this.BASE_URL}/api/users/login`, {

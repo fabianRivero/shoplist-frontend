@@ -2,7 +2,7 @@ import { apiFetch } from "../../../shared/adapters/ApiAdapter";
 import { CreateShopItem, shopItem } from "../models";
 
 class ShopItemService {
-  private BASE_URL = `${import.meta.env.BASE_URL}/api/items`;
+  private BASE_URL = `${import.meta.env.VITE_APP_BASE_URL}/api/items`;
 
   async createItem(data: CreateShopItem): Promise<shopItem> {
     const response = await apiFetch(`${this.BASE_URL}/`, {

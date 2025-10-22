@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { User } from "../../auth/models";
 
-const TokenKey = import.meta.env.TOKEN_KEY;
+const TokenKey = import.meta.env.VITE_APP_TOKEN_KEY;
 
 export class TokenStorage {
     static getToken(): string | null {
