@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { User } from "../../auth/models";
 
-const TokenKey = "token";
+const TokenKey = import.meta.env.TOKEN_KEY;
 
 export class TokenStorage {
     static getToken(): string | null {

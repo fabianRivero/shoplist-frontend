@@ -32,7 +32,6 @@ const PurchaseReducer = (state: PurchaseState, action: PurchaseAction): Purchase
     case PurchaseActionType.CREATE_PURCHASE: {
       if (!action.payload.purchaseId) return state;
 
-      // usamos la fecha actual como key
       const date = new Date().toISOString().split("T")[0];
       const newPurchases = new Map(state.purchases);
 
@@ -47,7 +46,6 @@ const PurchaseReducer = (state: PurchaseState, action: PurchaseAction): Purchase
 
       const newPurchases = new Map(state.purchases);
 
-      // encontrar la fecha a la que pertenece
       for (const [date, list] of newPurchases.entries()) {
         const idx = list.findIndex(p => p.purchaseId === action.payload.purchaseId);
         if (idx !== -1) {

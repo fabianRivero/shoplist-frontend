@@ -10,7 +10,7 @@ function getTimeZone(): string {
 }
 
 class PurchaseService {
-    private BASE_URL = "http://localhost:3000/api/purchases"
+    private BASE_URL = `${import.meta.env.BASE_URL}/api/purchases`
 
     async createPurchase(data: ShopList): Promise<Purchase>{
         const response = await apiFetch(`${this.BASE_URL}/`, {
