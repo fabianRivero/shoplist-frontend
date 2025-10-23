@@ -64,8 +64,8 @@ export const PurchaseForm = ({ mode }: Props) => {
   const editedPrice = watch("price") || 0;
 
   const totalCost = mode === "create" ?
-  purchaseQuantity * (selectedItem?.price ?? 0)
-  : purchaseQuantity * (editedPrice || selectedItem?.price || 0);
+  purchaseQuantity/(selectedItem?.quantity  ?? 0) * (selectedItem?.price  ?? 0)
+  : purchaseQuantity/(selectedItem?.quantity  ?? 0) * (editedPrice || selectedItem?.price || 0);
 
   const showBrand = (brand?: string) => {
     return brand && brand.trim().toLowerCase() !== "sin especificar";
@@ -208,13 +208,13 @@ export const PurchaseForm = ({ mode }: Props) => {
           <div className="stats">
             {mode === "create" ? (
               <p className="price">
-                Precio por {selectedItem.unit}: 
-                <strong>{selectedItem.price.toFixed(2)}</strong> {userInfo?.currency}
+                Precio por {purchaseQuantity} {selectedItem.unit}: 
+                <strong>{totalCost.toFixed(2)}</strong> {userInfo?.currency}
               </p>
               ) : (
               <div> 
                 <FormInput
-                  label={`Precio por ${selectedItem.unit}:`}
+                  label={`Precio por ${selectedItem.quantity} ${selectedItem.unit}:`}
                   register={register("price", { valueAsNumber: true })}
                   type="number"
                   error={formState.errors.price?.message}
@@ -226,7 +226,9 @@ export const PurchaseForm = ({ mode }: Props) => {
               Cantidad comprada: <strong>{purchaseQuantity}</strong> {selectedItem.unit}
             </p>
             <p>
-                Costo total: <strong>{totalCost.toFixed(2)}</strong> {userInfo?.currency}
+                Costo total: <strong>
+                  {totalCost.toFixed(2)}
+                  </strong> {userInfo?.currency}
               </p>
               {selectedItem.sector && (
                 <p>Sector: {selectedItem.sector}</p>

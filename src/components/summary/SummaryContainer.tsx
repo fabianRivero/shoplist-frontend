@@ -95,7 +95,7 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
       ) : (
         <div className="summary">
           <span className="month">{capitalize(getMonthName({ num: Number(monthNumber) }))} - {calendarYear()}</span>
-          <h3>Gasto general: {summary?.totalSpent} {userInfo?.currency}</h3>
+          <h3>Gasto general: {(summary?.totalSpent)?.toFixed(2)} {userInfo?.currency}</h3>
 
           {summary?.totalSpent ? (
           <>

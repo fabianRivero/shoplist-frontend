@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import "./main-menu.scss";
 
 export const MainMenu = () => {
+    const date = new Date();
+    const formattedDate = String(date).slice(0, 16) + "00:00:00" + String(date).slice(24)
+    const usedDate = new Date(formattedDate) 
 
     const navigate = useNavigate();
 
@@ -27,7 +30,7 @@ export const MainMenu = () => {
                     <button onClick={addPurchase}>Agregar compra</button>
                 </div>
 
-                <ShopListContainer period="day"/>
+                <ShopListContainer period="day" baseDate={String(usedDate)}/>
             </section>
 
             <section className="menu-section">

@@ -20,13 +20,13 @@ export const SummarySectorItem = ({ sector, expense, budget, type }: Props) => {
           {budget === undefined || budget === 0 ? (
             <span className="not-found-message">Presupuesto no establecido</span>
           ) : (
-            <span>{budget}$</span>
+            <span>{budget.toFixed(2)} {userInfo?.currency}</span>
           )}
         </li>
       ) : (
         <li className="summary-item">
           <span className="sector-name">{capitalize(sector)}:</span>{" "}
-          <span>{expense} {userInfo?.currency}</span>
+          <span>{expense?.toFixed(2)} {userInfo?.currency}</span>
         </li>
       )}
     </>
