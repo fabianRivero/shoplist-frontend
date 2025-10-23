@@ -50,7 +50,7 @@ export const ComparisonTable = () => {
         item.register.logs.forEach(log => {
         log.purchases.forEach(purchase => {
             if (purchase.sector === sector) {
-            count += (purchase.purchaseQuantity * purchase.price)
+            count += ((purchase.purchaseQuantity / purchase.quantity) * purchase.price)
             }
         })
         })
