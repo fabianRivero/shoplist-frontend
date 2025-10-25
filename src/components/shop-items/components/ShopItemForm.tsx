@@ -1,7 +1,7 @@
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { ShopItemContext } from "../context/shopItem";
 import { shopItem, ShopItemActionType } from "../models";
 import { shopItemsService } from "../services/shopItemService";
@@ -45,6 +45,7 @@ export const ShopItemForm = ({ isModal = false }: Props) => {
     const { isLoading, error: getItemError } = useAxios<string, shopItem>({
         serviceCall: getItemServiceCall,
     })
+    const [loading, setLoading] = useState(false)
         
     const id = modalState.data?.id;
 
@@ -58,6 +59,7 @@ export const ShopItemForm = ({ isModal = false }: Props) => {
 
     const onSubmit = async (data: ShopItemFormData) => {
         try{
+            setLoading(true)
             const userId = userState.state.user?.id
             if(!userId) throw new Error("Usuario no encontrado");
 
@@ -77,9 +79,12 @@ export const ShopItemForm = ({ isModal = false }: Props) => {
             }
 
             modalSetState({open: false, data: undefined})
-
+            setLoading(false)
         } catch(error){
             if(error instanceof Error) alert(error.message || "Error en la operación")
+            setLoading(false)
+        } finally{
+            setLoading(false)
         }
     }
 
@@ -140,7 +145,19 @@ export const ShopItemForm = ({ isModal = false }: Props) => {
                 setValueAs={(v) => typeof v === "string" ? capitalize(v) : v}
                 />
 
-                <button type="submit">{id ? "Editar" : "Crear"}</button>
+                <button type="submit" disabled={loading}>
+                    {loading ?
+                        <>
+                            {id ? "Editando..." : "Creando..."}
+                        </>
+                    :
+                        <>
+                            {id ? "Editar" : "Crear"}
+                        </> 
+                    }
+                    
+                    
+                </button>
             </form>
         </div>
     )
