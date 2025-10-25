@@ -16,7 +16,7 @@ export const PurchaseItem = ({ purchase, children }: Props) => {
     return (
         <li className="purchase-item">
             <h4>
-                {capitalize(purchase.name)}{purchase.brand && ` ${purchase.brand}`}
+                {capitalize(purchase.name)}{purchase.brand && ` (${purchase.brand})`}
             </h4>
             {purchase.sector && <div><h5>Sector:</h5> {capitalize(purchase.sector)}</div>}
             <div><h5>Cantidad comprada:</h5> {purchase.purchaseQuantity} {purchase.unit} </div>
