@@ -1,0 +1,14 @@
+@import "../shared/styles/responsive-breakpoints";
+@import "../shared/styles/buttons";
+
+.not-found-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 200px;
+    gap: 10px;
+
+    button{
+        @include button-style()
+    }
+}
