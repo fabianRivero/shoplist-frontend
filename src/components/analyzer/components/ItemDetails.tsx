@@ -7,6 +7,8 @@ import { Summary } from "../../summary/models/summaryModel";
 import { PieChart } from "./PieChart";
 import { DetailsTable } from "./DetailsTable";
 import "./styles/item-details.scss";
+import { MonthResumeTable } from "./MonthsResumeTable";
+import { getMonthName } from "../../../shared/services";
 
 interface Props {
     item: register
@@ -25,7 +27,7 @@ export const ItemDetails = ({ item }: Props) => {
     const period = item.register.period;
 
     const serviceCall = useCallback(() => summaryService.getSummary(date, period), [date, period])
-    const { data: summary } = useAxios<void, Summary>({
+    const { data: summary, isLoading } = useAxios<void, Summary>({
         serviceCall,
         trigger: true
     })
@@ -68,42 +70,62 @@ export const ItemDetails = ({ item }: Props) => {
     const budgetsSectorsLabels = budgetsData.map(d => d.existingSector);
     const budgetsSectorsData = budgetsData.map(d => d.total);
 
-
     useEffect(() => {
     const hasExpenses = expensesSectorsData.some((data) => data && data > 0);
     setExpensesExist(hasExpenses);
     }, [expensesSectorsData]);
-
-
     return(
         <section className="item-details">
-            <h2>Detalles del item</h2>
+            <h2>
+                {item.register.period === "month" ?
+                    `Detalles del item ${getMonthName({num:(Number(month))}).slice(0,3)}/${year}`
+                :
+                    `Detalles del item ${year}`
+                }
+            </h2>
             
             <div className="pie-charts-container">
-                {expensesSectorsLabels.length > 0 && expensesSectorsData.length > 0 ? ( 
-                    <>
-                        {expensesSectorsLabels && expensesSectorsData && expensesExist ?
-                            <PieChart graficSectors={expensesSectorsLabels} graficData={expensesSectorsData} dataType="expenses" summaryData={summary}/>
-                            :
-                            <div className="not-found-message">No hay gastos que analizar en este item.</div>
-                        }
-                        
-                        { budgetsSectorsLabels.length > 0 && budgetsSectorsData.length > 0 && item.register.period === "month" ? 
-                            <PieChart graficSectors={budgetsSectorsLabels} graficData={budgetsSectorsData} dataType="budgets" summaryData={summary} />
-                        :  
-                            <div className="not-found-message">No hay presupuestos que analizar en este item.</div>
-                        }   
-                    </>
+                {isLoading ? (
+                    <div className="loading-message">Cargando datos...</div>
                 ) : (
-                        <div className="not-found-message">No hay datos que analizar en este item.</div> 
-                    )
-                }
-                
-                
+                    <>
+                    {expensesSectorsLabels.length > 0 && expensesSectorsData.length > 0 ? (
+                        <>
+                        {expensesExist ? (
+                            <PieChart
+                            dataType="expenses"
+                            />
+                        ) : (
+                            <div className="not-found-message">
+                            No hay gastos que analizar en este item.
+                            </div>
+                        )}
+
+                        {budgetsSectorsLabels.length > 0 &&
+                        budgetsSectorsData.length > 0 &&
+                        item.register.period === "month" ? (
+                            <PieChart
+                            dataType="budgets"
+                            />
+                        ) : (
+                            <div className="not-found-message">
+                            No hay presupuestos que analizar en este item.
+                            </div>
+                        )}
+                        </>
+                    ) : (
+                        <div className="not-found-message">
+                        No hay datos que analizar en este item.
+                        </div>
+                    )}
+                    </>
+                )}
             </div>
 
 
             <DetailsTable/>
+
+            {item.register.period === "year" && <MonthResumeTable />}
 
         </section>
     )

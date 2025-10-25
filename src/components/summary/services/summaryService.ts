@@ -9,7 +9,6 @@ class SummaryService {
             method: "GET",
         })
         return await response.json();
-
     }
 
     async setGeneralBudget(year: number | string, month: number | string, budget: number): Promise<Budget> {

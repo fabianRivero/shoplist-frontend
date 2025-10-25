@@ -7,6 +7,7 @@ import { useAxios } from "../../../shared/hooks/useAxios";
 import { ModalContext } from "../../../shared/components/modal/context";
 import  "./styles/shop-item-list.scss";
 import { getMonthNumber } from "../../../shared/services/getMonthNumber";
+import { pendingItemsService } from "../../pending-shop-list/services/pendingItemService";
 
 interface Props {
     items: shopItem[],
@@ -64,6 +65,22 @@ export const ShopItemList = ({ items }: Props) => {
         });
     }
 
+    const newPending = (item: shopItem) => {
+        const data = {
+          productId: item.id,
+          name: item.name,
+          sector: item.sector, 
+          unit: item.unit,
+          quantity: item.quantity,
+          price: item.price,
+          brand: item.brand
+        }
+
+        pendingItemsService.createItem(data);
+        
+        alert ("Producto agregado correctamente.")
+    }
+
     const filteredItems = useMemo(() => {
       const term = searchTerm.toLowerCase().trim();
       if (!term) return items;
@@ -112,6 +129,9 @@ export const ShopItemList = ({ items }: Props) => {
                       </button>
                       <button className="shop-item-button" onClick={() => handleEdit(item.id)}>
                         Editar
+                      </button>
+                      <button className="shop-item-button" onClick={() => newPending(item)}>
+                        Agregar a compras pendientes
                       </button>
                       <button className="shop-item-button" onClick={() => newPurchase(item.id)}>
                         Agregar compra

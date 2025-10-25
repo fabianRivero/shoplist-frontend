@@ -3,20 +3,72 @@ import { Pie } from "react-chartjs-2";
 import "./styles/pie-chart.scss";
 import { TokenStorage } from "../../../shared/services";
 import { Summary } from "../../summary/models/summaryModel";
-import { useMemo } from "react";
-
-type Data<D> = D | null;
+import { useCallback, useContext, useMemo } from "react";
+import { useAxios } from "../../../shared/hooks/useAxios";
+import { summaryService } from "../../summary/services/summaryService";
+import { ModalContext } from "../../../shared/components/modal/context";
 
 interface Props {
-  graficSectors: Array<string | undefined>;
-  graficData: Array<number | undefined>;
   dataType: "expenses" | "budgets";
-  summaryData: Data<Summary>;
 }
 
-export const PieChart = ({ graficSectors, graficData, dataType, summaryData }: Props) => {
+export const PieChart = ({  dataType }: Props) => {  
+  const { state: modalState } = useContext(ModalContext)
   const usertoken = TokenStorage.getToken();  
   const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+
+  const itemRegister = modalState.data?.dataToUse?.register 
+
+  const year = itemRegister?.startDate.slice(0, 4);
+  const month = itemRegister?.startDate.slice(5, 7);
+  const day = itemRegister?.startDate.slice(8, 10);
+  const date = `${year}-${month}-${day}`;
+  const period = itemRegister?.period || "month";
+
+
+  const serviceCall = useCallback(() => summaryService.getSummary(date, period), [date, period])
+  const { data: summary } = useAxios<void, Summary>({
+      serviceCall,
+      trigger: true
+  })
+
+  const { expensesData, budgetsData } = useMemo(() => {
+    if (!summary?.budgets) return { expensesData: [], budgetsData: [] };
+    
+    const expensesSectorSet = new Set<string>();
+    const budgetsSectorSet = new Set<string>();
+
+    summary.budgets.forEach((budget) => {
+        budget.sectors.forEach((sector) => {
+        expensesSectorSet.add(sector.sector);
+        if (budget.general > 0 && sector.budget && sector.budget > 0)
+            budgetsSectorSet.add(sector.sector);
+        });
+    });
+
+    const buildData = (sectorArray: string[], type: "expenses" | "budgets") =>
+        sectorArray.map((sectorName) => {
+        let total = 0;
+        summary.budgets?.forEach((budget) => {
+            budget.sectors.forEach((sector) => {
+            if (sector.sector === sectorName) {
+                total += type === "expenses" ? sector.spent : sector.budget || 0;
+            }
+            });
+        });
+        return { existingSector: sectorName, total };
+        });
+
+    return {
+        expensesData: buildData(Array.from(expensesSectorSet), "expenses"),
+        budgetsData: buildData(Array.from(budgetsSectorSet), "budgets"),
+    };
+  }, [summary]);
+
+  const expensesSectorsLabels = expensesData.map(d => d.existingSector);
+  const expensesSectorsData = expensesData.map(d => d.total.toFixed(2));
+  const budgetsSectorsLabels = budgetsData.map(d => d.existingSector);
+  const budgetsSectorsData = budgetsData.map(d => d.total.toFixed(2));
 
   const getColor = (sectorsLabels: Array<string | undefined>) =>
     sectorsLabels.map((_, i) => `hsl(${(i * 360) / sectorsLabels.length}, 70%, 50%)`);
@@ -24,41 +76,41 @@ export const PieChart = ({ graficSectors, graficData, dataType, summaryData }: P
   const chartData = useMemo(() => {
     if (dataType === "expenses") {
       return {
-        labels: graficSectors,
+        labels: expensesSectorsLabels,
         datasets: [
           {
             label: "Distribución mensual",
-            data: graficData,
-            backgroundColor: getColor(graficSectors),
+            data: expensesSectorsData,
+            backgroundColor: getColor(expensesSectorsLabels),
             borderColor: "#fff",
             borderWidth: 2,
           },
         ],
       };
     } else {
-      const sectorsDataSum = graficData.reduce((acc, current) => {
+      const sectorsDataSum = budgetsSectorsData.reduce((acc, current) => {
         if (typeof current === "number" && !isNaN(current) && typeof acc === "number" && !isNaN(acc)) 
             return acc + current;
         return acc;
       }, 0);
 
-      const totalBudget = summaryData?.budgets?.[0]?.general ?? 0;
+      const totalBudget = summary?.budgets?.[0]?.general ?? 0;
       const difference = sectorsDataSum && totalBudget - sectorsDataSum;
 
       return {
-        labels: [...graficSectors, "No definido"],
+        labels: [...budgetsSectorsLabels, "No definido"],
         datasets: [
           {
             label: "Distribución mensual",
-            data: [...graficData, difference],
-            backgroundColor: getColor([...graficSectors, "No definido"]),
+            data: [...budgetsSectorsData, difference],
+            backgroundColor: getColor([...budgetsSectorsLabels, "No definido"]),
             borderColor: "#fff",
             borderWidth: 2,
           },
         ],
       };
     }
-  }, [graficSectors, graficData, dataType, summaryData]);
+  }, [expensesSectorsLabels, expensesSectorsData, dataType, summary, budgetsSectorsData, budgetsSectorsLabels]);
 
   const options = {
     responsive: true,
@@ -83,8 +135,8 @@ export const PieChart = ({ graficSectors, graficData, dataType, summaryData }: P
 
   const legendLabels =
     dataType === "budgets"
-      ? [...graficSectors, "No definido"]
-      : graficSectors;
+      ? [...budgetsSectorsLabels, "No definido"]
+      : expensesSectorsLabels;
 
   return (
     <div className="chart-wrapper">

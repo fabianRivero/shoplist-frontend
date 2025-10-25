@@ -13,6 +13,8 @@ import { PurchaseManagerContainer } from "../components/purchase-manager/Purchas
 import { AnalyzerProvider } from "../components/analyzer/context/AnalyzerReducer";
 import { AnalyzerContainer } from "../components/analyzer/AnalyzerContainer";
 import { InitialSetupContainer } from "../components/initialSetup/InitialSetupContainer";
+import { PendingItemProvider } from "../components/pending-shop-list/context/pendingItem";
+import { PendingShopListContainer } from "../components/pending-shop-list";
 
 const PrivateRoute = ({ children }: { children: ReactNode}) => {
   const { state } = useContext(AuthContext);
@@ -39,5 +41,6 @@ export const AppRouter = () => (
     <Route path="/item-list" element={<PrivateRoute><Header><ShopItemProvider><ShopItemsContainer /></ShopItemProvider></Header></PrivateRoute>}/>
     <Route path="/purchase-manager" element={<PrivateRoute><Header><PurchaseProvider><PurchaseManagerContainer/></PurchaseProvider></Header></PrivateRoute>}/>
     <Route path="/analyzer" element={<PrivateRoute><Header><AnalyzerProvider><AnalyzerContainer/></AnalyzerProvider></Header></PrivateRoute>}/>
+    <Route path="/pending-list" element={<PrivateRoute><Header><PendingItemProvider><PendingShopListContainer/></PendingItemProvider></Header></PrivateRoute>}/>
   </Routes>
 )

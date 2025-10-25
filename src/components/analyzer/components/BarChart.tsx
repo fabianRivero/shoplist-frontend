@@ -117,19 +117,25 @@ export const BarChart = () => {
     
   }, [itemInfo, sector])
 
-
+  const spentData = totals.spentInfo.map((n) => {
+    return n?.toFixed(2)
+  })
+  
+  const budgetData = totals.budgetInfo.map((n) => {
+    return n?.toFixed(2)
+  })
 
   const data = state.period !== "year" ? {
     labels: monthLabels,
     datasets: [
       {
         label: 'Gastos',
-        data: totals.spentInfo,
+        data: spentData,
         backgroundColor: 'rgba(255, 0, 0, 0.6)',
       },
       {
         label: 'Presupuestos',
-        data: totals.budgetInfo,
+        data: budgetData,
         backgroundColor: 'rgba(0, 255, 0, 0.6)',
       },
     ],
@@ -138,7 +144,7 @@ export const BarChart = () => {
     datasets: [
       {
         label: 'Gastos',
-        data: totals.spentInfo,
+        data: spentData,
         backgroundColor: 'rgba(255, 0, 0, 0.6)',
       },
     ],

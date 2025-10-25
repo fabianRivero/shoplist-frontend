@@ -13,7 +13,6 @@ export const ComparisonTable = () => {
 
     const sectors = useMemo(() => {
         const sectorSet = new Set<string | undefined>()
-
         state.items.forEach(item => {
             item.register.logs.forEach(log => {
                 log.purchases.forEach(purchase => {
@@ -86,7 +85,7 @@ export const ComparisonTable = () => {
 
                                         return(
                                             <td key={`${sector}-${item.register.startDate}`}>
-                                            {total} {userInfo?.currency}
+                                            {total.toFixed(2)} {userInfo?.currency}
                                             </td>
                                         )
                                         

@@ -4,15 +4,14 @@ import { summaryService } from "../../summary/services/summaryService";
 import { useAxios } from "../../../shared/hooks/useAxios";
 import { Summary } from "../../summary/models/summaryModel";
 import "./styles/details-table.scss";
-import { TokenStorage } from "../../../shared/services";
+import { getMonthName, TokenStorage } from "../../../shared/services";
 
-type Expense = {
-  sector: string;
+type MonthResume = {
+  month: number;
   expenses: number;
-  budget: number;
 };
 
-export const DetailsTable = () => {
+export const MonthResumeTable = () => {
     const { state: modalState } = useContext(ModalContext)
 
     const usertoken = TokenStorage.getToken();  
@@ -34,33 +33,28 @@ export const DetailsTable = () => {
     })
 
     const getTableData = () => {
-        const dataArray: Expense[] = [];
-        const sectorSet = new Set<string>
-
+        const dataArray: MonthResume[] = [];
+        const monthSet = new Set<number>
         summary?.budgets?.forEach((budget) => {
-            budget.sectors.forEach((sector) => {
-                sectorSet.add(sector.sector)
-          })
+            monthSet.add(budget.month)
         })
 
-        const sectorArray = Array.from(sectorSet)
+        const monthArray = Array.from(monthSet)
 
-        sectorArray.forEach((existingSector: string) => {
-            let sectorExpenses = 0;
-            let sectorBudget = 0;
+        monthArray.forEach((existingMonth: number) => {
+            let monthExpenses = 0;
             summary?.budgets?.forEach((budget) => {
 
                 budget.sectors.forEach((sector) => {
-                    if(sector.sector === existingSector){
-                        sectorExpenses += sector.spent
-                        sectorBudget += sector.budget || 0 
+                    if(budget.month === existingMonth){
+                        monthExpenses += sector.spent
                     }
                 })
 
 
             })
 
-            dataArray.push({sector: existingSector, expenses: sectorExpenses, budget: sectorBudget})
+            dataArray.push({ month: existingMonth, expenses: monthExpenses })
         })
 
         return dataArray
@@ -80,27 +74,17 @@ export const DetailsTable = () => {
 
             <tbody>
                 {tableData.map((data) => (
-                    <tr key={data.sector}>
-                        <th>{data.sector}</th>
+                    <tr key={data.month}>
+                        <th>{getMonthName({num: data.month})}</th>
                         <td>{data.expenses.toFixed(2)} {userInfo?.currency}</td>
-                        {summary?.period === "month" && data.budget !== 0 ? <td>{data.budget.toFixed(2)} {userInfo?.currency}</td> :
-                        summary?.period === "month" ? <td><p className="not-found-message">No establecido</p></td> : <></>}
+                        { summary?.period === "month" ? <td><p className="not-found-message">No establecido</p></td> : <></> }
                     </tr>
                 ))}
-                {
-                    summary?.period === "month" && 
-                        <tr>
-                            <th>General</th>
-                            <td>{summary?.totalSpent.toFixed(2)} {userInfo?.currency}</td>
-                            <td>{
-                                summary && summary.budgets && (
-                                    summary.budgets[0].general
-                                ) 
-                            } {userInfo?.currency}</td>
-                        </tr>
-
-                }
-
+                
+                    <tr>
+                        <th>General</th>
+                        <td>{summary?.totalSpent.toFixed(2)} {userInfo?.currency}</td>
+                    </tr>
             </tbody>
         </table>
     )

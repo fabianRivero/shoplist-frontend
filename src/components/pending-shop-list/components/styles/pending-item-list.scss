@@ -1,0 +1,49 @@
+@import "../../../../shared/styles/colors";
+@import "../../../../shared/styles/box-style";
+@import "../../../../shared/styles/fonts";
+@import "../../../../shared/styles/responsive-breakpoints";
+
+.pending-item-list-container {
+    @include box-style();
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+
+    .shop-item-search{
+        width: 100%;
+        height: 30px;
+    }
+    
+    .pending-item-list{
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        width: 100%;
+        .shop-item-group{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            .shop-item-letter{
+                font-size: $h3-size;
+                border-bottom: 0.1px solid $separator;
+            }
+
+            .shop-item-list{
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    }
+
+    .buttons{
+        gap: 8px;
+        align-self: flex-start;
+        .shop-item-button{
+            padding: 4px 6px;
+        }
+    }  
+}
