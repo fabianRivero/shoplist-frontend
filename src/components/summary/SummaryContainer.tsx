@@ -54,7 +54,6 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
       return index !== -1 ? index + 1 : null;
     }
   }  
-
   function getCurrentBudget(summary: Summary | null, currentMonth: number, currentYear: number) {
     if (!summary || !summary.budgets) return null;
       
