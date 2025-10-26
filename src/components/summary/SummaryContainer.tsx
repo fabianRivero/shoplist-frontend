@@ -81,7 +81,6 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
   useEffect(() => {
     if (authState?.user) {
       setUsedCurrency(authState.user.currency);
-      console.log(authState)
     } else {
       const usertoken = TokenStorage.getToken();
       const newUserInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;

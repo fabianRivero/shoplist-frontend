@@ -7,11 +7,9 @@ export class AuthService {
 
     async login(email: string, password: string): Promise<User>{
         const token = await this.authAdapter.login(email, password);
-        console.log(token)
         TokenStorage.setToken(token);
 
         const user: User = TokenStorage.decodeToken(token);
-        console.log("pasa aqui login")
         return user;
     }
 
