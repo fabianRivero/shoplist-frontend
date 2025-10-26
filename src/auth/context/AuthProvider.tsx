@@ -5,7 +5,7 @@ import { AuthContext } from "./AuthContext";
 
 const initialState: AuthState = {
     isAuthenticated: false,
-    user: null,
+    user: undefined,
     loading: true
 };
 
@@ -17,7 +17,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
             return{ isAuthenticated: true, loading: false, user: action.payload }
 
         case AuthActionType.LOGOUT:
-            return { isAuthenticated: false, user: null, loading: false };
+            return { isAuthenticated: false, user: undefined, loading: false };
 
         case AuthActionType.UPDATE:
             return { isAuthenticated: true, loading: false, user: action.payload };
@@ -26,7 +26,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
             return { ...state, loading: false }
 
         case AuthActionType.DELETE_ACOUNT:
-            return { isAuthenticated: false, user: null, loading: false };
+            return { isAuthenticated: false, user: undefined, loading: false };
 
         default: 
         return state;

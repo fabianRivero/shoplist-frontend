@@ -6,6 +6,7 @@ import { HeaderModalContext } from "../../shared/components/headerModal/context"
 import "./profile-menu-container.scss";
 import { AuthActionType } from "../../auth/models";
 import { ModalContext } from "../../shared/components/modal/context";
+import { TokenStorage } from "../../shared/services";
 
 export const ProfileMenuContainer = () => {
     const { state, dispatch } = useContext(AuthContext);
@@ -87,6 +88,12 @@ export const ProfileMenuContainer = () => {
         try {            
             const authService = new AuthService();
             await authService.setInitialSetup(newCurrency);
+            const usertoken = TokenStorage.getToken();
+            const newUserInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+            if (newUserInfo) {
+            dispatch({ type: AuthActionType.UPDATE, payload: newUserInfo });
+            }
+
 
             alert("Divisa actualizada correctamente.");
             setShowCurrencyChange(false);

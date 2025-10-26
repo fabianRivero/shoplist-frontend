@@ -7,9 +7,11 @@ export class AuthService {
 
     async login(email: string, password: string): Promise<User>{
         const token = await this.authAdapter.login(email, password);
+        console.log(token)
         TokenStorage.setToken(token);
 
         const user: User = TokenStorage.decodeToken(token);
+        console.log("pasa aqui login")
         return user;
     }
 
@@ -22,8 +24,13 @@ export class AuthService {
         TokenStorage.removeToken();
     }
 
-    async setInitialSetup(currency: string): Promise<void> {
-        await this.authAdapter.setInitialSetup(currency);
+    async setInitialSetup(currency: string): Promise<User> {
+        const response =await this.authAdapter.setInitialSetup(currency);
+
+        TokenStorage.setToken(response);
+
+        const user: User = TokenStorage.decodeToken(response);
+        return user;
     }
 
     async updateUser(currency?: string, password?: string): Promise<void> {

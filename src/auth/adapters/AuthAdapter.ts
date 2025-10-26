@@ -16,7 +16,6 @@ export class AuthAdapter {
         data = {};
         }
 
-
         if(!response.ok){
             throw new Error(data.message || "Error de autenticación");
         }
@@ -40,7 +39,7 @@ export class AuthAdapter {
         return data.token;
     }
 
-    async setInitialSetup(currency: string, isConfigured: boolean = true): Promise<void>{
+    async setInitialSetup(currency: string, isConfigured: boolean = true): Promise<string>{
 
         const response = await apiFetch(`${this.BASE_URL}/api/users/update`, {
             method: "PUT",
@@ -50,10 +49,18 @@ export class AuthAdapter {
             })
         })
 
+        let data;
+            try {
+            data = await response.json();
+            } catch {
+            data = {};
+        }
+
         if(!response.ok){
             const errorData = await response.json();
             throw new Error(errorData.message || "Error al guardar configuración inicial")   
         }
+        return data.token;
     }
 
     async updateUser(currency?: string, password?: string): Promise<void>{

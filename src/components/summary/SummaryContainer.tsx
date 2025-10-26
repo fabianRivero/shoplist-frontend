@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SummarySectorItem } from "./components/SummarySectorItem";
 import { SummaryContext } from "./context/summaryContext";
 import { Summary } from "./models/summaryModel";
@@ -8,6 +8,8 @@ import { SummaryActionType } from "./models/summaryState";
 import { PurchaseContext } from "../shop-list/context/ShopListContext";
 import { capitalize, getMonthName, TokenStorage } from "../../shared/services";
 import "./summary-container.scss"
+import { AuthContext } from "../../auth/context";
+import { AuthActionType } from "../../auth/models";
 
 type Props = {
     date?: string;
@@ -25,10 +27,9 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
 
   const summaryContext = useContext(SummaryContext);
   const { state: purchaseState } = useContext(PurchaseContext);
+  const { state: authState, dispatch } = useContext(AuthContext);
 
-  const usertoken = TokenStorage.getToken();  
-  const userInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
-
+  const [usedCurrency, setUsedCurrency] = useState<string | undefined>("")
   
   const serviceCall = useCallback(() => summaryService.getSummary(date, period, sector), [date, period, sector])
   const { isLoading, data: summary, error, executeFetch } = useAxios<void, Summary>({
@@ -77,6 +78,20 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
     executeFetch();
   }, [purchaseState, executeFetch]);
 
+  useEffect(() => {
+    if (authState?.user) {
+      setUsedCurrency(authState.user.currency);
+      console.log(authState)
+    } else {
+      const usertoken = TokenStorage.getToken();
+      const newUserInfo = usertoken ? TokenStorage.decodeToken(usertoken) : undefined;
+      if (newUserInfo) {
+        dispatch({ type: AuthActionType.UPDATE, payload: newUserInfo });
+        setUsedCurrency(newUserInfo.currency);
+      }
+    }
+  }, [authState.user?.currency]);
+
   if(isLoading) return <p>Cargando productos...</p>
   if(error) return <p>Error: {error}</p>
 
@@ -95,7 +110,7 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
       ) : (
         <div className="summary">
           <span className="month">{capitalize(getMonthName({ num: Number(monthNumber) }))} - {calendarYear()}</span>
-          <h3>Gasto general: {(summary?.totalSpent)?.toFixed(2)} {userInfo?.currency}</h3>
+          <h3>Gasto general: {(summary?.totalSpent)?.toFixed(2)} {usedCurrency}</h3>
 
           {summary?.totalSpent ? (
           <>
@@ -119,7 +134,7 @@ export const SummaryContainer = ({date = localDate, period = "month", sector}: P
                     {monthBudget.general === 0 ? (
                       <div></div>
                     ) : (
-                    <h3>Presupuesto mensual restante: {monthBudget.general - summary.totalSpent} {userInfo?.currency}</h3>
+                    <h3>Presupuesto mensual restante: {monthBudget.general - summary.totalSpent} {usedCurrency}</h3>
                     )}
                     {monthBudget.sectors && monthBudget.sectors.length > 0 ? (
                     <div className="by-sector">
